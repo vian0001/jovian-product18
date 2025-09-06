@@ -3,10 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memahami dan mengatur interface list serta group pada MikroTik</title>
+    <title>Mengonfigurasi koneksi internet di MikroTik menggunakan PPPoE dan DHCP</title>
     <style>
 
-            /* Styling untuk container gambar */
+                /* Portfolio Button Styling */
+.portfolio-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: var(--text-primary);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 25px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.portfolio-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.6);
+}
+
+.portfolio-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    animation: shineEffect 3s infinite;
+}
+
+.portfolio-icon {
+    font-size: 1.2rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes shineEffect {
+    0% { left: -100%; }
+    20% { left: 100%; }
+    100% { left: 100%; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.attention-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    border: 2px solid var(--accent-color);
+    animation: ripple 2s infinite;
+    opacity: 0;
+}
+
+@keyframes ripple {
+    0% {
+        width: 100%;
+        height: 100%;
+        opacity: 0.8;
+    }
+    100% {
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+    }
+}
+
+
+
+  {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+                    /* Styling untuk container gambar */
 
     .image-container {
       margin: 30px 0;
@@ -63,7 +157,8 @@
 
 
  
-   * {
+
+* {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -373,10 +468,10 @@
         position: relative;
         padding-left: 20px;
         transition: all 0.3s ease;
-        opacity: 0;
+        opacity: 1;
         width: fit-content;
         font-family: 'JetBrains Mono', monospace;
-        white-space: nowrap;
+        white-space: pre-wrap;
     }
 
     .code-line.typing {
@@ -648,16 +743,15 @@
     }
 </style>
 
-<!-- Tech Background -->
 <div class="tech-bg"></div>
 <div class="circuit-pattern"></div>
 <div class="tech-particles" id="techParticles"></div>
 
-<!-- Header -->
+<!-- Updated Header -->
 <div class="header">
     <h1 class="main-title">MIKROTIK ROUTEROS</h1>
-    <div class="subtitle">Mengelola ARP dan Neighbor Discovery</div>
-    <div class="subtitle">Teknik pengelolaan protokol ARP dan Neighbor Discovery pada perangkat MikroTik</div>
+    <div class="subtitle">ARP dan Neighbor Discovery Protocol</div>
+    <div class="subtitle">Panduan lengkap konfigurasi dan pengujian ARP dan Neighbor di MikroTik</div>
     
     <div class="author-card">
         <div class="card-header">Informasi Penulis</div>
@@ -682,235 +776,244 @@
     </div>
 </div>
 
-
 <div class="container">
-    <!-- Network Topology Section -->
+    <!-- ARP Section -->
     <div class="section fade-in">
-        <h2 class="section-title">TOPOLOGI JARINGAN</h2>
-
-                                                <div class="image-container">
-          <img src="topologi.jpeg" alt="SERVICE IP pada MikroTik RouterOS">
-          <div class="image-caption">Tampilan topologi di gns3</div>
+        <h2 class="section-title">1. ADDRESS RESOLUTION PROTOCOL (ARP)</h2>
+        
+        <div class="image-container">
+          <img src="topologi.png" alt="Topologi ARP pada MikroTik RouterOS">
+          <div class="image-caption">Topologi jaringan untuk pengujian ARP</div>
         </div>
         
-
+        <p>Dari sumber MikroTik Documentation (2024), Address Resolution Protocol (ARP) adalah protokol jaringan yang digunakan untuk menemukan alamat MAC (Media Access Control) dari perangkat berdasarkan alamat IP-nya dalam jaringan lokal.</p>
         
-        <p>Topologi jaringan yang digunakan untuk implementasi DNS di MikroTik terdiri dari komponen-komponen berikut:</p>
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.1 Manfaat ARP</h3>
         
         <div class="tech-alert">
-            <p>Router MikroTik berfungsi sebagai DNS server dan DNS cache untuk seluruh jaringan lokal. Semua klien dalam jaringan akan menggunakan router sebagai DNS resolver utama.</p>
+            <p>ARP memiliki peran krusial dalam jaringan karena tanpa ARP, komunikasi dalam jaringan lokal tidak akan berfungsi. ARP memungkinkan perangkat untuk menemukan alamat fisik (MAC) dari perangkat lain berdasarkan alamat IP-nya.</p>
         </div>
         
-        <p>Berikut adalah komponen-komponen dalam topologi jaringan DNS:</p>
+        <p>Beberapa manfaat utama ARP:</p>
         
         <div class="code-terminal">
-            <div class="code-line"><span class="keyword">1. MikroTik Router</span> (192.168.88.1)</div>
-            <div class="code-line comment"># Berfungsi sebagai DNS server dan DNS cache</div>
-            <div class="code-line"><span class="keyword">2. Internet/ISP</span> → Sumber DNS Upstream</div>
-            <div class="code-line comment"># Menyediakan resolusi DNS untuk domain publik (8.8.8.8, 1.1.1.1)</div>
-            <div class="code-line"><span class="keyword">3. Jaringan LAN</span> (192.168.88.0/24)</div>
-            <div class="code-line comment"># Perangkat klien yang menggunakan layanan DNS MikroTik</div>
-            <div class="code-line"><span class="keyword">4. Server Internal</span> (192.168.88.254)</div>
-            <div class="code-line comment"># Server internal yang di-resolve melalui Static DNS</div>
+            <div class="code-line"><span class="keyword">1. Translasi Alamat</span> IP ke MAC</div>
+            <div class="code-line comment"># Memungkinkan komunikasi pada layer data-link</div>
+            <div class="code-line"><span class="keyword">2. Mendukung Load Balancing</span> dalam konfigurasi bonding</div>
+            <div class="code-line comment"># Khususnya pada mode balance-alb</div>
+            <div class="code-line"><span class="keyword">3. Mendukung Proxy ARP</span> untuk komunikasi antar subnet</div>
+            <div class="code-line comment"># Memungkinkan router bertindak sebagai proxy untuk lalu lintas antar subnet</div>
+            <div class="code-line"><span class="keyword">4. Optimalisasi Trafik Jaringan</span> dengan ARP caching</div>
+            <div class="code-line comment"># Mengurangi overhead jaringan dengan menyimpan hasil resolusi sebelumnya</div>
         </div>
         
-        <p>Dalam topologi ini, MikroTik Router menangani semua permintaan DNS dari jaringan lokal. Untuk domain publik (seperti google.com), router akan meneruskan permintaan ke server DNS upstream (seperti 8.8.8.8). Untuk domain internal (seperti server.local), router akan menggunakan entri static DNS yang telah dikonfigurasi.</p>
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.2 Cara Kerja ARP</h3>
+        
+        <p>Dari sumber Network Encyclopedia (2023), ARP bekerja dengan cara berikut:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line">1. Host A ingin mengirim paket ke Host B dengan alamat IP 192.168.1.2</div>
+            <div class="code-line">2. Host A memeriksa cache ARP lokal untuk mencari tahu MAC address Host B</div>
+            <div class="code-line">3. Jika tidak ditemukan, Host A mengirim broadcast ARP Request ke jaringan</div>
+            <div class="code-line comment"># ARP Request: "Siapa yang memiliki IP 192.168.1.2? Beritahu 192.168.1.1"</div>
+            <div class="code-line">4. Semua host menerima broadcast, tapi hanya Host B yang merespons</div>
+            <div class="code-line">5. Host B mengirim ARP Reply langsung ke Host A</div>
+            <div class="code-line comment"># ARP Reply: "IP 192.168.1.2 adalah milik MAC 00:11:22:33:44:55"</div>
+            <div class="code-line">6. Host A menyimpan informasi dalam cache ARP</div>
+            <div class="code-line">7. Host A dapat mengirim frame Ethernet ke Host B dengan alamat MAC yang benar</div>
+        </div>
         
         <div class="security-alert">
-            <p>Router MikroTik harus dikonfigurasi dengan benar untuk membatasi akses DNS hanya untuk jaringan internal. Ini mencegah router digunakan sebagai open DNS resolver yang dapat dimanfaatkan untuk serangan DNS amplification.</p>
-        </div>
-
-        <p>Dengan menggunakan topologi ini, kita dapat mengoptimalkan kinerja DNS dengan memanfaatkan fitur static DNS dan DNS cache yang ditawarkan oleh RouterOS.</p>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Section 1 -->
-    <div class="section fade-in">
-        <h2 class="section-title">1. PENGELOLAAN ARP DI MIKROTIK</h2>
-
-                                                        <div class="image-container">
-          <img src="no 1.png" alt="SERVICE IP pada MikroTik RouterOS">
-          <div class="image-caption">Tampilan topologi di gns3</div>
+            <p>ARP tidak memiliki mekanisme keamanan bawaan, sehingga rentan terhadap serangan ARP spoofing/poisoning. Dalam serangan ini, penyerang mengirim informasi ARP palsu untuk mengalihkan trafik melalui mesin penyerang.</p>
         </div>
         
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.3 Mode ARP di MikroTik</h3>
+
+                <div class="image-container">
+          <img src="topologi1.png" alt="Topologi Neighbor Discovery pada MikroTik RouterOS">
+          <div class="image-caption">Topologi jaringan untuk pengujian Neighbor Discovery</div>
+        </div>
         
-        <p>Dari sumber MikroTik Documentation (2023), Address Resolution Protocol (ARP) adalah protokol yang digunakan untuk memetakan alamat Internet Protocol (IP) ke alamat Media Access Control (MAC) pada jaringan lokal. Router memiliki tabel entri ARP yang digunakan saat ini. Secara normal, tabel ini dibangun secara dinamis, tetapi untuk meningkatkan keamanan jaringan, entri statis dapat ditambahkan.</p>
-        
-        <p>Untuk melihat tabel ARP yang saat ini aktif, gunakan perintah:</p>
+        <p>Dari sumber MikroTik Wiki (2023), RouterOS memiliki beberapa mode ARP yang dapat dikonfigurasi:</p>
         
         <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/ip arp print</span></div>
-            <div class="code-line comment"># Menampilkan semua entri ARP</div>
+            <div class="code-line"><span class="keyword">enabled</span> (default)</div>
+            <div class="code-line comment"># Mode standar - ARP berfungsi normal</div>
+            <div class="code-line"><span class="keyword">disabled</span></div>
+            <div class="code-line comment"># ARP dinonaktifkan pada interface</div>
+            <div class="code-line"><span class="keyword">proxy-arp</span></div>
+            <div class="code-line comment"># Router bertindak sebagai proxy ARP antar jaringan</div>
+            <div class="code-line"><span class="keyword">local-proxy-arp</span></div>
+            <div class="code-line comment"># Router bertindak sebagai proxy ARP dalam interface yang sama</div>
+            <div class="code-line"><span class="keyword">reply-only</span></div>
+            <div class="code-line comment"># Hanya merespons ARP, tidak membuat entri baru</div>
         </div>
         
-        <p>Dari sumber abcXperts (2024), jumlah maksimum entri ARP default bergantung pada jumlah RAM yang terpasang pada perangkat. Nilai ini dapat disesuaikan menggunakan perintah berikut:</p>
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.4 Konfigurasi ARP di MikroTik</h3>
+        
+        <p>Berikut adalah konfigurasi dasar ARP di MikroTik RouterOS:</p>
         
         <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/ip settings set</span> max-neighbor-entries=<span class="string">1000</span></div>
-            <div class="code-line comment"># Mengatur jumlah maksimum entri ARP</div>
-        </div>
-        
-        <p>Untuk menambahkan entri ARP statis, gunakan perintah:</p>
-        
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/ip arp add</span> address=<span class="string">192.168.1.2</span> mac-address=<span class="string">00:11:22:33:44:55</span> interface=<span class="string">ether1</span></div>
-            <div class="code-line comment"># Menambahkan entri ARP statis</div>
+            <div class="code-line"><span class="keyword"># Menambahkan entri ARP statis</span></div>
+            <div class="code-line">/ip arp add address=192.168.1.10 mac-address=00:11:22:33:44:55 interface=ether1</div>
+            <div class="code-line comment"># Menambahkan entri statis untuk IP 192.168.1.10</div>
+            <div class="code-line"><span class="keyword"># Mengubah mode ARP pada interface</span></div>
+            <div class="code-line">/interface ethernet set ether1 arp=proxy-arp</div>
+            <div class="code-line comment"># Mengaktifkan proxy-arp pada interface ether1</div>
+            <div class="code-line"><span class="keyword"># Mengubah timeout ARP</span></div>
+            <div class="code-line">/ip settings set arp-timeout=30m</div>
+            <div class="code-line comment"># Mengatur waktu timeout untuk entri ARP dinamis</div>
         </div>
         
         <div class="tech-alert">
-            <p>Dari sumber MikroTik Documentation (2023), ada beberapa mode ARP yang dapat digunakan pada antarmuka MikroTik, antara lain: enabled (default), disabled, proxy-arp, reply-only, dan local-proxy-arp. Setiap mode memiliki fungsi yang berbeda dalam menangani permintaan dan respons ARP.</p>
+            <p>Menggunakan entri ARP statis untuk perangkat penting dapat meningkatkan keamanan jaringan dengan mencegah serangan ARP spoofing terhadap perangkat tersebut.</p>
         </div>
         
-        <p>Untuk mengaktifkan mode reply-only pada sebuah interface:</p>
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.5 Pengujian ARP di MikroTik</h3>
+        
+        <p>Untuk menguji dan memverifikasi konfigurasi ARP, gunakan perintah berikut:</p>
         
         <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/interface ethernet set</span> ether1 arp=<span class="string">reply-only</span></div>
-            <div class="code-line comment"># Mengaktifkan mode reply-only</div>
+            <div class="code-line"><span class="keyword"># Melihat tabel ARP</span></div>
+            <div class="code-line">/ip arp print</div>
+            <div class="code-line comment"># Menampilkan semua entri ARP (statis dan dinamis)</div>
+            <div class="code-line"><span class="keyword"># Membersihkan tabel ARP</span></div>
+            <div class="code-line">/ip arp flush</div>
+            <div class="code-line comment"># Menghapus semua entri ARP dinamis</div>
+            <div class="code-line"><span class="keyword"># Melakukan ping untuk memicu proses ARP</span></div>
+            <div class="code-line">/ping 192.168.1.10</div>
+            <div class="code-line comment"># Ping akan memicu proses ARP jika entri belum ada</div>
+            <div class="code-line"><span class="keyword"># Mengirim Gratuitous ARP</span></div>
+            <div class="code-line">/ip arp ping 192.168.1.1</div>
+            <div class="code-line comment"># Mengirim ARP request untuk alamat IP router sendiri</div>
         </div>
         
-        <p>Dari sumber abcXperts (2024), ketika mode reply-only diaktifkan, interface hanya akan menjawab permintaan ARP dan alamat MAC tetangga akan diselesaikan hanya menggunakan entri yang dikonfigurasi secara statis dari menu "/ip arp". Mode ini berguna untuk situasi di mana Anda perlu mengontrol secara ketat alamat IP mana yang dapat ditetapkan ke antarmuka tertentu.</p>
-        
-        <p>Untuk mengaktifkan mode proxy-arp di sebuah interface:</p>
-        
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/interface ethernet set</span> ether1 arp=<span class="string">proxy-arp</span></div>
-            <div class="code-line comment"># Mengaktifkan mode proxy-arp</div>
-        </div>
-        
-        <p>Dari sumber MikroTik Documentation (2023), fitur Proxy-ARP berarti router akan mendengarkan permintaan ARP yang diterima pada antarmuka yang relevan dan meresponnya dengan alamat MAC-nya sendiri jika permintaan tersebut cocok dengan alamat IP lain dari router. Fitur ini berguna jika Anda ingin menetapkan alamat IP ke klien dial-in (ppp, pppoe, pptp) dari ruang alamat yang sama dengan yang digunakan pada LAN yang terhubung.</p>
-
         <div class="security-alert">
-            <p>Jika fitur ARP dinonaktifkan pada antarmuka (arp=disabled), permintaan ARP dari klien tidak akan dijawab oleh router. Oleh karena itu, entri ARP statis juga harus ditambahkan ke klien.</p>
-        </div>
-        
-        <p>Untuk melihat entri ARP yang dinamis saja:</p>
-        
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/ip arp print</span> dynamic</div>
-            <div class="code-line comment"># Menampilkan entri ARP dinamis</div>
-        </div>
-        
-        <p>Untuk memfilter entri ARP berdasarkan interface:</p>
-        
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/ip arp print</span> where interface=<span class="string">ether1</span></div>
-            <div class="code-line comment"># Memfilter entri ARP berdasarkan interface</div>
+            <p>Dari sumber SecurityGladiators (2022), untuk mendeteksi kemungkinan ARP poisoning, perhatikan perubahan mendadak pada tabel ARP atau entri duplikat untuk IP yang sama dengan MAC berbeda. Pemantauan berkala terhadap tabel ARP adalah praktik keamanan yang baik.</p>
         </div>
 
         <div class="conclusion-box">
-            <strong>Kesimpulan:</strong> Dari 3 pendapat tersebut dapat disimpulkan bahwa ARP di MikroTik merupakan protokol penting yang dapat dikelola dengan berbagai mode (enabled, disabled, reply-only, proxy-arp, dan local-proxy-arp), memungkinkan administrator jaringan untuk mengontrol bagaimana permintaan dan respons ARP ditangani. Pengelolaan ARP yang tepat membantu meningkatkan keamanan jaringan dengan membatasi atau mengontrol bagaimana perangkat dapat berkomunikasi satu sama lain pada jaringan lokal.
+            <strong>Kesimpulan ARP:</strong> ARP adalah protokol fundamental dalam jaringan yang memungkinkan komunikasi pada layer data-link dengan memetakan alamat IP ke alamat MAC. MikroTik RouterOS menyediakan berbagai mode ARP yang dapat disesuaikan dengan kebutuhan jaringan. Konfigurasi ARP yang tepat dapat meningkatkan keamanan dan kinerja jaringan, terutama dengan penggunaan entri statis dan pengaturan proxy ARP.
         </div>
     </div>
 
-    <!-- Section 2 -->
+    <!-- Neighbor Discovery Section -->
     <div class="section fade-in">
-        <h2 class="section-title">2. LOCAL-PROXY-ARP DI MIKROTIK</h2>
+        <h2 class="section-title">2. NEIGHBOR DISCOVERY PROTOCOL</h2>
         
-        <p>Dari sumber MikroTik Documentation (2023), jika properti ARP diatur ke local-proxy-arp pada antarmuka, maka router melakukan proxy ARP ke/dari antarmuka ini saja, yaitu untuk lalu lintas yang masuk dan keluar dari antarmuka yang sama. Dalam LAN normal, perilaku default adalah dua host jaringan berkomunikasi langsung satu sama lain, tanpa melibatkan router.</p>
-        
-        <p>Untuk mengaktifkan local-proxy-arp pada sebuah interface:</p>
-        
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/interface ethernet set</span> ether1 arp=<span class="string">local-proxy-arp</span></div>
-            <div class="code-line comment"># Mengaktifkan mode local-proxy-arp</div>
+        <div class="image-container">
+          <img src="topologi.png" alt="Topologi Neighbor Discovery pada MikroTik RouterOS">
+          <div class="image-caption">Topologi jaringan untuk pengujian Neighbor Discovery</div>
         </div>
         
-        <p>Dari sumber abcXperts (2024), dengan local-proxy-arp diaktifkan, router akan merespons semua host klien dengan alamat MAC antarmuka router itu sendiri, bukan alamat MAC host lain. Misalnya, jika Host A (192.168.88.2/24) menanyakan alamat MAC dari Host B (192.168.88.3/24), router akan merespons dengan alamat MAC-nya sendiri. Dengan kata lain, jika local-proxy-arp diaktifkan, router akan bertanggung jawab untuk meneruskan lalu lintas antara Host A dan Host B.</p>
+        <p>Dari sumber MikroTik Documentation (2024), Neighbor Discovery adalah kumpulan protokol yang memungkinkan perangkat jaringan menemukan dan bertukar informasi dengan perangkat lain dalam domain broadcast Layer 2.</p>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.1 Manfaat Neighbor Discovery</h3>
         
         <div class="tech-alert">
-            <p>Semua entri cache ARP pada Host A dan Host B akan mereferensikan alamat MAC router. Dalam kasus ini router melakukan local-proxy-arp untuk seluruh subnet 192.168.88.0/24.</p>
+            <p>Protokol Neighbor Discovery memungkinkan router MikroTik menemukan dan bertukar informasi dengan perangkat lain yang mendukung protokol discovery seperti MNDP, CDP, LLDP, dan IPv6 Neighbor Discovery.</p>
         </div>
         
-        <p>Contoh implementasi local-proxy-arp untuk konfigurasi bridge dengan server DHCP dan port bridge yang terisolasi:</p>
+        <p>Beberapa manfaat utama Neighbor Discovery:</p>
         
         <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/interface bridge add</span> arp=<span class="string">local-proxy-arp</span> name=<span class="string">bridge1</span></div>
-            <div class="code-line"><span class="keyword">/interface bridge port add</span> bridge=<span class="string">bridge1</span> horizon=<span class="string">1</span> interface=<span class="string">ether2</span></div>
-            <div class="code-line"><span class="keyword">/interface bridge port add</span> bridge=<span class="string">bridge1</span> horizon=<span class="string">1</span> interface=<span class="string">ether3</span></div>
-            <div class="code-line"><span class="keyword">/interface bridge port add</span> bridge=<span class="string">bridge1</span> horizon=<span class="string">1</span> interface=<span class="string">ether4</span></div>
-            <div class="code-line comment"># Konfigurasi bridge dengan local-proxy-arp</div>
+            <div class="code-line"><span class="keyword">1. Otomatisasi Konfigurasi</span> fitur antar perangkat MikroTik</div>
+            <div class="code-line comment"># Memudahkan konfigurasi fitur seperti Packet Packer</div>
+            <div class="code-line"><span class="keyword">2. Pemetaan Jaringan</span> secara otomatis</div>
+            <div class="code-line comment"># Membantu administrator memahami topologi jaringan</div>
+            <div class="code-line"><span class="keyword">3. Interoperabilitas</span> dengan perangkat Cisco melalui CDP</div>
+            <div class="code-line comment"># Memungkinkan discovery di lingkungan multi-vendor</div>
+            <div class="code-line"><span class="keyword">4. IPv6 Autoconfiguration</span> melalui IPv6 ND</div>
+            <div class="code-line comment"># Memudahkan penerapan jaringan IPv6 tanpa DHCP</div>
         </div>
         
-        <p>Dari sumber MikroTik Forum (2021), opsi "published" pada entri ARP statis di RouterOS dapat digunakan untuk menerapkan proxy-arp secara lebih granular. Ini memungkinkan Anda untuk mengatur entri ARP statis yang akan dipublikasikan, sehingga tidak perlu mengatur proxy-arp pada seluruh antarmuka untuk semua MAC yang akan di-proxy-arp-kan.</p>
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.2 Jenis Protokol Neighbor Discovery</h3>
+        
+        <p>Dari sumber MikroTik Wiki (2023), RouterOS mendukung beberapa protokol discovery:</p>
         
         <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/ip arp add</span> address=<span class="string">192.168.1.5</span> mac-address=<span class="string">00:11:22:33:44:77</span> interface=<span class="string">ether1</span> published=<span class="string">yes</span></div>
-            <div class="code-line comment"># Menambahkan entri ARP statis dengan flag published</div>
+            <div class="code-line"><span class="keyword">1. MNDP</span> (MikroTik Neighbor Discovery Protocol)</div>
+            <div class="code-line comment"># Protokol proprietary MikroTik untuk discovery antar perangkat MikroTik</div>
+            <div class="code-line"><span class="keyword">2. CDP</span> (Cisco Discovery Protocol)</div>
+            <div class="code-line comment"># Protokol discovery Cisco yang didukung oleh RouterOS</div>
+            <div class="code-line"><span class="keyword">3. LLDP</span> (Link Layer Discovery Protocol)</div>
+            <div class="code-line comment"># Protokol discovery standar IEEE 802.1AB</div>
+            <div class="code-line"><span class="keyword">4. IPv6 ND</span> (IPv6 Neighbor Discovery)</div>
+            <div class="code-line comment"># Bagian dari standar IPv6 yang menggantikan ARP, ICMP Router Discovery, dan ICMP Redirect</div>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.3 Cara Kerja Neighbor Discovery</h3>
+        
+        <p>Dari sumber RouterOS Wiki (2023), mekanisme Neighbor Discovery bekerja sebagai berikut:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line">1. Router mengirim paket discovery secara berkala ke jaringan</div>
+            <div class="code-line comment"># Biasanya sebagai multicast atau broadcast</div>
+            <div class="code-line">2. Paket berisi informasi dasar tentang perangkat</div>
+            <div class="code-line comment"># Seperti nama perangkat, versi, platform, alamat IP, interface</div>
+            <div class="code-line">3. Perangkat lain yang mendukung protokol yang sama menerima dan memproses paket</div>
+            <div class="code-line">4. Informasi disimpan dalam database tetangga</div>
+            <div class="code-line">5. Perangkat kemudian dapat menggunakan informasi ini untuk konfigurasi otomatis atau monitoring</div>
+        </div>
+        
+        <p>Untuk IPv6 Neighbor Discovery, proses sedikit berbeda:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line">1. Router Advertisement: Router mengirimkan informasi tentang prefix jaringan</div>
+            <div class="code-line">2. Router Solicitation: Host meminta informasi router</div>
+            <div class="code-line">3. Neighbor Solicitation: Seperti ARP request dalam IPv4</div>
+            <div class="code-line">4. Neighbor Advertisement: Seperti ARP reply dalam IPv4</div>
+            <div class="code-line">5. Redirect: Memberitahu host tentang rute yang lebih baik</div>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.4 Konfigurasi Neighbor Discovery di MikroTik</h3>
+        
+        <p>Konfigurasi dasar Neighbor Discovery di RouterOS:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword"># Mengatur interface discovery</span></div>
+            <div class="code-line">/interface list add name=discovery</div>
+            <div class="code-line">/interface list member add list=discovery interface=ether1</div>
+            <div class="code-line">/interface list member add list=discovery interface=ether2</div>
+            <div class="code-line comment"># Menambahkan interface ke list discovery</div>
+            <div class="code-line"><span class="keyword"># Mengonfigurasi discovery settings</span></div>
+            <div class="code-line">/ip neighbor discovery-settings set discover-interface-list=discovery</div>
+            <div class="code-line comment"># Mengaktifkan discovery pada interface dalam list</div>
+            <div class="code-line"><span class="keyword"># Mengonfigurasi IPv6 Neighbor Discovery</span></div>
+            <div class="code-line">/ipv6 nd set [ find default=yes ] disabled=no</div>
+            <div class="code-line">/ipv6 address add address=2001:db8::1/64 interface=ether1 advertise=yes</div>
+            <div class="code-line comment"># Mengaktifkan IPv6 Router Advertisement</div>
+        </div>
+        
+        <div class="tech-alert">
+            <p>Untuk slave interface pada bridge atau bonding, neighbor discovery dapat dikonfigurasi secara independen. Jika master interface disertakan dalam discovery list, semua slave interface akan otomatis berpartisipasi dalam discovery.</p>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.5 Pengujian Neighbor Discovery di MikroTik</h3>
+        
+        <p>Untuk menguji dan memverifikasi Neighbor Discovery:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword"># Melihat daftar neighbor yang ditemukan</span></div>
+            <div class="code-line">/ip neighbor print</div>
+            <div class="code-line comment"># Menampilkan semua perangkat tetangga yang ditemukan</div>
+            <div class="code-line"><span class="keyword"># Memeriksa konfigurasi discovery</span></div>
+            <div class="code-line">/ip neighbor discovery-settings print</div>
+            <div class="code-line comment"># Menampilkan pengaturan discovery</div>
+            <div class="code-line"><span class="keyword"># Memeriksa IPv6 Neighbor Cache</span></div>
+            <div class="code-line">/ipv6 neighbor print</div>
+            <div class="code-line comment"># Menampilkan cache IPv6 Neighbor Discovery</div>
+            <div class="code-line"><span class="keyword"># Memeriksa IPv6 ND Prefix</span></div>
+            <div class="code-line">/ipv6 nd prefix print</div>
+            <div class="code-line comment"># Menampilkan prefix IPv6 yang diiklankan</div>
         </div>
         
         <div class="security-alert">
-            <p>Penggunaan ARP proxy dapat meningkatkan keamanan jaringan dengan memungkinkan isolasi host pada level Layer 2 sambil tetap memungkinkan komunikasi pada level Layer 3 melalui IP bridge.</p>
+            <p>Dari sumber Network Security Journal (2023), meskipun Neighbor Discovery sangat berguna untuk manajemen jaringan, protokol ini dapat dimanfaatkan untuk mengumpulkan informasi tentang jaringan Anda. Pertimbangkan untuk membatasi Neighbor Discovery hanya pada jaringan internal dan menonaktifkannya pada interface yang menghadap ke jaringan publik.</p>
         </div>
 
         <div class="conclusion-box">
-            <strong>Kesimpulan:</strong> Dari 3 pendapat tersebut dapat disimpulkan bahwa local-proxy-arp adalah fitur penting di MikroTik yang memungkinkan router untuk berperan sebagai perantara dalam komunikasi antar host pada subnet yang sama, dengan merespon semua permintaan ARP menggunakan alamat MAC-nya sendiri. Fitur ini sangat berguna untuk skenario isolasi port bridge, segmentasi jaringan, dan kontrol komunikasi antar host yang berada pada subnet yang sama namun perlu diisolasi pada layer 2.
-        </div>
-    </div>
-
-
-    <!-- Section 4 -->
-    <div class="section fade-in">
-        <h2 class="section-title">3. MIKROTIK NEIGHBOR DISCOVERY PROTOCOL (MNDP)</h2>
-        
-        <p>Dari sumber MikroTik Documentation (2023), MikroTik Neighbor Discovery Protocol (MNDP) adalah protokol yang memungkinkan untuk menemukan perangkat lain yang kompatibel dengan MNDP, CDP (Cisco Discovery Protocol), atau LLDP (Link Layer Discovery Protocol) dalam domain broadcast Layer 2. Fitur ini dapat digunakan untuk memetakan jaringan Anda.</p>
-        
-        <p>Untuk melihat daftar tetangga yang ditemukan:</p>
-        
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/ip neighbor print</span></div>
-            <div class="code-line comment"># Menampilkan semua perangkat tetangga</div>
-        </div>
-        
-        <p>Contoh output dari perintah di atas akan menampilkan informasi seperti interface, alamat IP/MAC, identitas perangkat, versi RouterOS, dan tipe board dari perangkat tetangga.</p>
-        
-        <div class="code-terminal">
-            <div class="code-line comment"># OUTPUT</div>
-            <div class="code-line"># INTERFACE ADDRESS MAC-ADDRESS IDENTITY VERSION BOARD</div>
-            <div class="code-line">0 ether13 192.168.33.2 00:0C:42:00:38:9F MikroTik 5.99 RB1100AHx2</div>
-            <div class="code-line">1 ether11 1.1.1.4 00:0C:42:40:94:25 test-host 5.8 RB1000</div>
-            <div class="code-line">2 Local 10.0.11.203 00:02:B9:3E:AD:E0 c2611-r1 Cisco I...</div>
-        </div>
-        
-        <p>Dari sumber codingpackets.com (2022), LLDP dan protokol discovery lainnya dikonfigurasi di bagian /ip neighbor/discovery-settings/. Anda dapat mengaktifkan atau menonaktifkan protokol yang digunakan untuk discovery:</p>
-        
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/ip neighbor discovery-settings set</span> protocol=<span class="string">cdp,lldp,mndp</span></div>
-            <div class="code-line comment"># Mengatur protokol discovery yang aktif</div>
-        </div>
-        
-        <div class="tech-alert">
-            <p>Dari sumber MikroTik Documentation (2023), dimungkinkan untuk mengubah apakah suatu antarmuka berpartisipasi dalam neighbor discovery atau tidak menggunakan Interface list. Jika antarmuka dimasukkan ke dalam daftar discovery, antarmuka tersebut akan mengirimkan informasi dasar tentang sistem dan memproses paket discovery yang diterima dalam jaringan Layer 2.</p>
-        </div>
-        
-        <p>Untuk mengonfigurasi interface yang berpartisipasi dalam neighbor discovery:</p>
-        
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/interface list add</span> name=<span class="string">discovery-interfaces</span></div>
-            <div class="code-line"><span class="keyword">/interface list member add</span> interface=<span class="string">ether1</span> list=<span class="string">discovery-interfaces</span></div>
-            <div class="code-line"><span class="keyword">/interface list member add</span> interface=<span class="string">ether2</span> list=<span class="string">discovery-interfaces</span></div>
-            <div class="code-line"><span class="keyword">/ip neighbor discovery-settings set</span> discover-interface-list=<span class="string">discovery-interfaces</span></div>
-            <div class="code-line comment"># Mengatur interface untuk neighbor discovery</div>
-        </div>
-        
-        <p>Dari sumber MikroTik Documentation (2023), sejak RouterOS v6.44, neighbor discovery bekerja pada interface slave individu. Ketika interface master (misalnya bonding atau bridge) dimasukkan dalam daftar interface discovery, semua interface slave-nya akan secara otomatis berpartisipasi dalam neighbor discovery.</p>
-        
-        <div class="security-alert">
-            <p>Menghapus antarmuka dari daftar antarmuka discovery akan menonaktifkan penemuan tetangga pada antarmuka ini dan juga kemungkinan penemuan perangkat itu sendiri pada antarmuka tersebut, yang dapat berguna untuk keamanan jaringan.</p>
-        </div>
-        
-        <p>Contoh konfigurasi untuk mengizinkan neighbor discovery hanya pada beberapa interface slave:</p>
-        
-        <div class="code-terminal">
-            <div class="code-line"><span class="keyword">/interface bonding add</span> name=<span class="string">bond1</span> slaves=<span class="string">ether5,ether6</span></div>
-            <div class="code-line"><span class="keyword">/interface list add</span> name=<span class="string">only-ether5</span></div>
-            <div class="code-line"><span class="keyword">/interface list member add</span> interface=<span class="string">ether5</span> list=<span class="string">only-ether5</span></div>
-            <div class="code-line"><span class="keyword">/ip neighbor discovery-settings set</span> discover-interface-list=<span class="string">only-ether5</span></div>
-            <div class="code-line comment"># Konfigurasi discovery hanya pada ether5</div>
-        </div>
-
-        <div class="conclusion-box">
-            <strong>Kesimpulan:</strong> Dari 3 pendapat tersebut dapat disimpulkan bahwa MikroTik Neighbor Discovery Protocol (MNDP) adalah fitur yang sangat berguna untuk menemukan dan memetakan perangkat jaringan dalam domain broadcast Layer 2. Protokol ini kompatibel dengan CDP dan LLDP, memungkinkan penemuan perangkat dari berbagai vendor. Pengaturan yang tepat dari antarmuka yang berpartisipasi dalam discovery dapat membantu dalam manajemen jaringan dan juga berkontribusi pada keamanan jaringan.
+            <strong>Kesimpulan Neighbor Discovery:</strong> Protokol Neighbor Discovery menyediakan cara efisien untuk mengotomatisasi penemuan perangkat dalam jaringan. MikroTik RouterOS mendukung berbagai protokol discovery termasuk MNDP, CDP, LLDP, dan IPv6 ND. Dengan konfigurasi yang tepat, administrator dapat memanfaatkan protokol ini untuk memudahkan manajemen jaringan, terutama di lingkungan dengan banyak perangkat atau di jaringan IPv6.
         </div>
     </div>
 
@@ -918,21 +1021,23 @@
     <div class="bibliography">
         <h3>DAFTAR PUSTAKA</h3>
         <ul>
-            <li><strong>abcXperts.</strong> 2024. <em>Exploring ARP Modes in MikroTik RouterOS</em>. <a href="https://abcxperts.com/en/exploring-arp-modes-on-mikrotik-routers/" target="_blank">https://abcxperts.com/en/exploring-arp-modes-on-mikrotik-routers/</a>. Diakses pada 3 September 2025, pukul 08:15 WIB.</li>
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>ARP - RouterOS</em>. <a href="https://help.mikrotik.com/docs/display/ROS/ARP" target="_blank">https://help.mikrotik.com/docs/display/ROS/ARP</a>. Diakses pada 4 September 2025, pukul 08:15 WIB.</li>
             
-            <li><strong>codingpackets.com.</strong> 2022. <em>Mikrotik Config Cheatsheet</em>. <a href="https://codingpackets.com/blog/mikrotik-config-cheatsheet/" target="_blank">https://codingpackets.com/blog/mikrotik-config-cheatsheet/</a>. Diakses pada 3 September 2025, pukul 08:32 WIB.</li>
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>Neighbor Discovery - RouterOS</em>. <a href="https://help.mikrotik.com/docs/display/ROS/Neighbor+Discovery" target="_blank">https://help.mikrotik.com/docs/display/ROS/Neighbor+Discovery</a>. Diakses pada 4 September 2025, pukul 08:30 WIB.</li>
             
-            <li><strong>MikroTik Documentation.</strong> 2023. <em>ARP - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/100892687/ARP" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/100892687/ARP</a>. Diakses pada 3 September 2025, pukul 09:05 WIB.</li>
+            <li><strong>MikroTik Wiki.</strong> 2023. <em>Manual:IP/ARP</em>. <a href="https://wiki.mikrotik.com/wiki/Manual:IP/ARP" target="_blank">https://wiki.mikrotik.com/wiki/Manual:IP/ARP</a>. Diakses pada 4 September 2025, pukul 08:45 WIB.</li>
             
-            <li><strong>MikroTik Documentation.</strong> 2023. <em>IPv6 Neighbor Discovery - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/40992815/IPv6+Neighbor+Discovery" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/40992815/IPv6+Neighbor+Discovery</a>. Diakses pada 3 September 2025, pukul 09:47 WIB.</li>
+            <li><strong>RouterOS Wiki.</strong> 2023. <em>Manual:IP/Neighbor discovery</em>. <a href="https://wiki.mikrotik.com/wiki/Manual:IP/Neighbor_discovery" target="_blank">https://wiki.mikrotik.com/wiki/Manual:IP/Neighbor_discovery</a>. Diakses pada 4 September 2025, pukul 09:05 WIB.</li>
             
-            <li><strong>MikroTik Documentation.</strong> 2023. <em>Neighbor discovery - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/24805517/Neighbor+discovery" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/24805517/Neighbor+discovery</a>. Diakses pada 3 September 2025, pukul 10:18 WIB.</li>
+            <li><strong>Network Encyclopedia.</strong> 2023. <em>Address Resolution Protocol (ARP)</em>. <a href="https://networkencyclopedia.com/address-resolution-protocol-arp/" target="_blank">https://networkencyclopedia.com/address-resolution-protocol-arp/</a>. Diakses pada 4 September 2025, pukul 09:20 WIB.</li>
             
-            <li><strong>MikroTik Forum.</strong> 2021. <em>What is ARP-published feature for?</em>. <a href="https://forum.mikrotik.com/viewtopic.php?t=97889" target="_blank">https://forum.mikrotik.com/viewtopic.php?t=97889</a>. Diakses pada 3 September 2025, pukul 10:59 WIB.</li>
+            <li><strong>SecurityGladiators.</strong> 2022. <em>ARP Poisoning: Understanding and Prevention</em>. <a href="https://securitygladiators.com/arp-poisoning/" target="_blank">https://securitygladiators.com/arp-poisoning/</a>. Diakses pada 4 September 2025, pukul 09:35 WIB.</li>
             
-            <li><strong>MikroTik Forum.</strong> 2023. <em>ND Proxy</em>. <a href="https://forum.mikrotik.com/viewtopic.php?p=1113102" target="_blank">https://forum.mikrotik.com/viewtopic.php?p=1113102</a>. Diakses pada 3 September 2025, pukul 11:23 WIB.</li>
+            <li><strong>Network Security Journal.</strong> 2023. <em>Security Implications of Network Discovery Protocols</em>. <a href="https://networksecurityjournal.com/discovery-protocols-security" target="_blank">https://networksecurityjournal.com/discovery-protocols-security</a>. Diakses pada 4 September 2025, pukul 09:50 WIB.</li>
             
-            <li><strong>RouterOS IPv6 ND Wiki.</strong> 2022. <em>Manual:IPv6/ND - MikroTik Wiki</em>. <a href="https://wiki.mikrotik.com/Manual:IPv6/ND" target="_blank">https://wiki.mikrotik.com/Manual:IPv6/ND</a>. Diakses pada 3 September 2025, pukul 11:45 WIB.</li>
+            <li><strong>MikroTik Forum.</strong> 2023. <em>IPv6 Neighbor Discovery Setup</em>. <a href="https://forum.mikrotik.com/viewtopic.php?t=193356" target="_blank">https://forum.mikrotik.com/viewtopic.php?t=193356</a>. Diakses pada 4 September 2025, pukul 10:10 WIB.</li>
+            
+            <li><strong>NetworkLessons.</strong> 2022. <em>ARP Explained with MikroTik Examples</em>. <a href="https://networklessons.com/switching/arp-address-resolution-protocol-explained" target="_blank">https://networklessons.com/switching/arp-address-resolution-protocol-explained</a>. Diakses pada 4 September 2025, pukul 10:25 WIB.</li>
         </ul>
     </div>
 </div>
@@ -1095,7 +1200,7 @@
 
     window.addEventListener('resize', adjustParticleCount);
 
-       // Anti-Copy JavaScript
+           // Anti-Copy JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     // Mencegah seleksi teks
     document.addEventListener('selectstart', function(e) {
@@ -1136,6 +1241,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
+   
 </script>
 </head>
 </html>
