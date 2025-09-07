@@ -1,3 +1,1389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mengonfigurasi koneksi internet di MikroTik menggunakan PPPoE dan DHCP</title>
+    <style>
+
+                /* Portfolio Button Styling */
+.portfolio-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: var(--text-primary);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 25px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.portfolio-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.6);
+}
+
+.portfolio-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    animation: shineEffect 3s infinite;
+}
+
+.portfolio-icon {
+    font-size: 1.2rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes shineEffect {
+    0% { left: -100%; }
+    20% { left: 100%; }
+    100% { left: 100%; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.attention-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    border: 2px solid var(--accent-color);
+    animation: ripple 2s infinite;
+    opacity: 0;
+}
+
+@keyframes ripple {
+    0% {
+        width: 100%;
+        height: 100%;
+        opacity: 0.8;
+    }
+    100% {
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+    }
+}
+
+
+
+  {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+                    /* Styling untuk container gambar */
+
+    .image-container {
+      margin: 30px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.4s ease;
+      max-width: 100%;
+      position: relative;
+    }
+
+    .image-container:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: all 0.4s ease;
+    }
+
+    .image-container:hover img {
+      filter: brightness(1.1);
+    }
+
+    .image-caption {
+      background: linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7), transparent);
+      padding: 15px 20px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .image-container:hover .image-caption {
+      transform: translateY(0);
+    }
+
+    @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+    {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+ 
+
+* {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --primary-color: #2563eb;
+        --secondary-color: #1e40af;
+        --accent-color: #06b6d4;
+        --success-color: #059669;
+        --warning-color: #d97706;
+        --danger-color: #dc2626;
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-card: #334155;
+        --bg-light: #f8fafc;
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+        --border-color: #475569;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* Tech Background Pattern */
+    .tech-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -3;
+        background: 
+            radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(220, 38, 38, 0.08) 0%, transparent 50%);
+    }
+
+    .circuit-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        opacity: 0.03;
+        background-image: 
+            linear-gradient(90deg, var(--primary-color) 1px, transparent 1px),
+            linear-gradient(var(--primary-color) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: circuitMove 20s linear infinite;
+    }
+
+    @keyframes circuitMove {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(50px, 50px); }
+    }
+
+    /* Floating particles */
+    .tech-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: 50%;
+        opacity: 0.6;
+        animation: float linear infinite;
+    }
+
+    @keyframes float {
+        0% { 
+            transform: translateY(100vh) translateX(0px);
+            opacity: 0;
+        }
+        10% { 
+            opacity: 0.6;
+        }
+        90% { 
+            opacity: 0.6;
+        }
+        100% { 
+            transform: translateY(-100px) translateX(100px);
+            opacity: 0;
+        }
+    }
+
+    /* Header */
+    .header {
+        text-align: center;
+        padding: 100px 20px 80px;
+        background: linear-gradient(135deg, 
+            rgba(37, 99, 235, 0.1) 0%, 
+            rgba(6, 182, 212, 0.1) 50%, 
+            rgba(5, 150, 105, 0.1) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(37, 99, 235, 0.1),
+            transparent
+        );
+        animation: headerScan 10s linear infinite;
+    }
+
+    @keyframes headerScan {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .main-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color), var(--success-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 20px;
+        text-shadow: 0 0 50px rgba(37, 99, 235, 0.3);
+        animation: titleGlow 4s ease-in-out infinite alternate;
+        position: relative;
+    }
+
+    @keyframes titleGlow {
+        0% { filter: brightness(1); }
+        100% { filter: brightness(1.2); }
+    }
+
+    .subtitle {
+        font-size: 1.3rem;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    .author-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 600px;
+        margin: 0 auto;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        animation: cardFloat 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes cardFloat {
+        0% { transform: translateY(0px); }
+        100% { transform: translateY(-10px); }
+    }
+
+    .card-header {
+        text-align: center;
+        font-size: 1.1rem;
+        color: var(--accent-color);
+        margin-bottom: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .author-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        text-align: left;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--primary-color);
+        min-width: 80px;
+        margin-right: 15px;
+    }
+
+    .info-value {
+        color: var(--text-primary);
+        font-weight: 400;
+    }
+
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 20px;
+    }
+
+    /* Section styling */
+    .section {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.05) 0%, 
+            rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        margin: 40px 0;
+        position: relative;
+        backdrop-filter: blur(20px);
+        transition: all 0.4s ease;
+        animation: sectionSlide 0.8s ease-out;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .section:nth-child(even) {
+        animation: sectionSlideRight 0.8s ease-out;
+    }
+
+    @keyframes sectionSlide {
+        from { transform: translateX(-50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes sectionSlideRight {
+        from { transform: translateX(50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    .section:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 12px 48px rgba(37, 99, 235, 0.2);
+        transform: translateY(-8px);
+    }
+
+    .section-title {
+        font-family: 'Inter', sans-serif;
+        color: var(--primary-color);
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 25px;
+        position: relative;
+        padding-left: 30px;
+    }
+
+    .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 30px;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        border-radius: 2px;
+    }
+
+    /* Code blocks with typing effect */
+    .code-terminal {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 25px;
+        margin: 25px 0;
+        font-family: 'JetBrains Mono', monospace;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .code-terminal::before {
+        content: '$ mikrotik@router:~';
+        color: var(--success-color);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .code-line {
+        color: var(--text-primary);
+        margin: 8px 0;
+        position: relative;
+        padding-left: 20px;
+        transition: all 0.3s ease;
+        opacity: 1;
+        width: fit-content;
+        font-family: 'JetBrains Mono', monospace;
+        white-space: pre-wrap;
+    }
+
+    .code-line.typing {
+        opacity: 1;
+        border-right: 2px solid var(--accent-color);
+        animation: blink-cursor 1s infinite;
+    }
+
+    .code-line.typed {
+        opacity: 1;
+        border-right: none;
+    }
+
+    @keyframes blink-cursor {
+        0%, 50% { border-color: var(--accent-color); }
+        51%, 100% { border-color: transparent; }
+    }
+
+    .code-line:hover {
+        background: rgba(37, 99, 235, 0.1);
+        padding-left: 25px;
+        border-radius: 6px;
+    }
+
+    .code-line::before {
+        content: '▶';
+        position: absolute;
+        left: 0;
+        color: var(--accent-color);
+        font-size: 0.8rem;
+    }
+
+    .comment {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .string {
+        color: var(--warning-color);
+        font-weight: 400;
+    }
+
+    .keyword {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    /* Alert boxes */
+    .tech-alert {
+        background: linear-gradient(135deg, 
+            rgba(37, 99, 235, 0.1), 
+            rgba(6, 182, 212, 0.1));
+        border: 1px solid var(--primary-color);
+        border-left: 4px solid var(--primary-color);
+        border-radius: 12px;
+        padding: 25px;
+        margin: 30px 0;
+        position: relative;
+        animation: alertPulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes alertPulse {
+        0% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
+        100% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.4); }
+    }
+
+    .tech-alert::before {
+        content: '🔧 TEKNOLOGI INFO';
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background: var(--bg-primary);
+        color: var(--primary-color);
+        padding: 5px 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 20px;
+        border: 1px solid var(--primary-color);
+    }
+
+    .security-alert {
+        background: linear-gradient(135deg, 
+            rgba(220, 38, 38, 0.1), 
+            rgba(217, 119, 6, 0.1));
+        border: 1px solid var(--danger-color);
+        border-left: 4px solid var(--danger-color);
+        border-radius: 12px;
+        padding: 25px;
+        margin: 30px 0;
+        position: relative;
+        animation: securityBlink 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes securityBlink {
+        0% { border-left-color: var(--danger-color); }
+        100% { border-left-color: var(--warning-color); }
+    }
+
+    .security-alert::before {
+        content: '🛡️ KEAMANAN';
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background: var(--bg-primary);
+        color: var(--danger-color);
+        padding: 5px 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 20px;
+        border: 1px solid var(--danger-color);
+    }
+
+    .conclusion-box {
+        background: linear-gradient(135deg, 
+            rgba(5, 150, 105, 0.1), 
+            rgba(37, 99, 235, 0.1));
+        border: 1px solid var(--success-color);
+        border-left: 4px solid var(--success-color);
+        border-radius: 12px;
+        padding: 25px;
+        margin: 30px 0;
+        position: relative;
+        animation: conclusionGlow 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes conclusionGlow {
+        0% { box-shadow: 0 0 20px rgba(5, 150, 105, 0.2); }
+        100% { box-shadow: 0 0 30px rgba(5, 150, 105, 0.4); }
+    }
+
+    .conclusion-box::before {
+        content: '📝 KESIMPULAN';
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background: var(--bg-primary);
+        color: var(--success-color);
+        padding: 5px 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 20px;
+        border: 1px solid var(--success-color);
+    }
+
+    /* Bibliography */
+    .bibliography {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.08), 
+            rgba(255, 255, 255, 0.04));
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 40px;
+        margin-top: 60px;
+        backdrop-filter: blur(20px);
+        animation: biblioFade 1.5s ease-out;
+    }
+
+    @keyframes biblioFade {
+        from { opacity: 0; transform: translateY(50px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bibliography h3 {
+        color: var(--accent-color);
+        font-family: 'Inter', sans-serif;
+        margin-bottom: 30px;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .bibliography ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .bibliography li {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        line-height: 1.8;
+        color: var(--text-secondary);
+        transition: all 0.3s ease;
+        position: relative;
+        padding-left: 50px;
+    }
+
+    .bibliography li::before {
+        content: '';
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        font-size: 1.2rem;
+    }
+
+    .bibliography li:hover {
+        color: var(--text-primary);
+        transform: translateX(10px);
+        border-color: var(--primary-color);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.05));
+    }
+
+    .bibliography a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        word-break: break-all;
+    }
+
+    .bibliography a:hover {
+        color: var(--accent-color);
+        text-decoration: underline;
+    }
+
+    /* Progress bar */
+    .scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--success-color));
+        z-index: 1000;
+        transition: width 0.3s ease;
+        box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .main-title {
+            font-size: 2.5rem;
+        }
+        
+        .section {
+            padding: 25px 20px;
+            margin: 30px 0;
+        }
+        
+        .container {
+            padding: 40px 15px;
+        }
+
+        .code-terminal {
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        .author-info {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Smooth animations */
+    .fade-in {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="tech-bg"></div>
+<div class="circuit-pattern"></div>
+<div class="tech-particles" id="techParticles"></div>
+
+<!-- Updated Header -->
+<div class="header">
+    <h1 class="main-title">MIKROTIK ROUTEROS</h1>
+    <div class="subtitle">ARP dan Neighbor Discovery Protocol</div>
+    <div class="subtitle">Panduan lengkap konfigurasi dan pengujian ARP dan Neighbor di MikroTik</div>
+    
+    <div class="author-card">
+        <div class="card-header">Informasi Penulis</div>
+        <div class="author-info">
+            <div class="info-item">
+                <span class="info-label">Penulis:</span>
+                <span class="info-value">Jovian Ekasakta</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Guru:</span>
+                <span class="info-value">Arief Wahyudin</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Kelas:</span>
+                <span class="info-value">XI TJKT 03</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Sekolah:</span>
+                <span class="info-value">Dwija Bhakti 01 Jombang</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Network Topology Section -->
+<div class="section fade-in">
+    <h2 class="section-title">TOPOLOGI JARINGAN</h2>
+
+    <!-- Gambar Topologi -->
+    <div class="image-container">
+        <img src="topologi deskripsi.png" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Tampilan topologi jaringan untuk Interface List dan Group</div>
+    </div>
+
+
+        <!-- Gambar Topologi -->
+    <div class="image-container">
+        <img src="topologi-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Tampilan topologi jaringan untuk Interface List dan Group</div>
+    </div>
+
+    </div>
+
+
+
+<div class="container">
+    <!-- ARP Section -->
+    <div class="section fade-in">
+        <h2 class="section-title">1. ADDRESS RESOLUTION PROTOCOL (ARP)</h2>
+        
+        <div class="image-container">
+          <img src="no 1-ink.jpeg" alt="Topologi ARP pada MikroTik RouterOS">
+          <div class="image-caption">ADDRESS RESOLUTION PROTOCOL</div>
+        </div>
+        
+        <p>Dari sumber MikroTik Documentation (2024), Address Resolution Protocol (ARP) adalah protokol jaringan yang digunakan untuk menemukan alamat MAC (Media Access Control) dari perangkat berdasarkan alamat IP-nya dalam jaringan lokal.</p>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.1 Manfaat ARP</h3>
+        
+        <div class="tech-alert">
+            <p>ARP memiliki peran krusial dalam jaringan karena tanpa ARP, komunikasi dalam jaringan lokal tidak akan berfungsi. ARP memungkinkan perangkat untuk menemukan alamat fisik (MAC) dari perangkat lain berdasarkan alamat IP-nya.</p>
+        </div>
+        
+        <p>Beberapa manfaat utama ARP:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">1. Translasi Alamat</span> IP ke MAC</div>
+            <div class="code-line comment"># Memungkinkan komunikasi pada layer data-link</div>
+            <div class="code-line"><span class="keyword">2. Mendukung Load Balancing</span> dalam konfigurasi bonding</div>
+            <div class="code-line comment"># Khususnya pada mode balance-alb</div>
+            <div class="code-line"><span class="keyword">3. Mendukung Proxy ARP</span> untuk komunikasi antar subnet</div>
+            <div class="code-line comment"># Memungkinkan router bertindak sebagai proxy untuk lalu lintas antar subnet</div>
+            <div class="code-line"><span class="keyword">4. Optimalisasi Trafik Jaringan</span> dengan ARP caching</div>
+            <div class="code-line comment"># Mengurangi overhead jaringan dengan menyimpan hasil resolusi sebelumnya</div>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.2 Cara Kerja ARP</h3>
+        
+        <p>Dari sumber Network Encyclopedia (2023), ARP bekerja dengan cara berikut:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line">1. Host A ingin mengirim paket ke Host B dengan alamat IP 192.168.1.2</div>
+            <div class="code-line">2. Host A memeriksa cache ARP lokal untuk mencari tahu MAC address Host B</div>
+            <div class="code-line">3. Jika tidak ditemukan, Host A mengirim broadcast ARP Request ke jaringan</div>
+            <div class="code-line comment"># ARP Request: "Siapa yang memiliki IP 192.168.1.2? Beritahu 192.168.1.1"</div>
+            <div class="code-line">4. Semua host menerima broadcast, tapi hanya Host B yang merespons</div>
+            <div class="code-line">5. Host B mengirim ARP Reply langsung ke Host A</div>
+            <div class="code-line comment"># ARP Reply: "IP 192.168.1.2 adalah milik MAC 00:11:22:33:44:55"</div>
+            <div class="code-line">6. Host A menyimpan informasi dalam cache ARP</div>
+            <div class="code-line">7. Host A dapat mengirim frame Ethernet ke Host B dengan alamat MAC yang benar</div>
+        </div>
+        
+        <div class="security-alert">
+            <p>ARP tidak memiliki mekanisme keamanan bawaan, sehingga rentan terhadap serangan ARP spoofing/poisoning. Dalam serangan ini, penyerang mengirim informasi ARP palsu untuk mengalihkan trafik melalui mesin penyerang.</p>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.3 Mode ARP di MikroTik</h3>
+
+
+        <p>Dari sumber MikroTik Wiki (2023), RouterOS memiliki beberapa mode ARP yang dapat dikonfigurasi:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">enabled</span> (default)</div>
+            <div class="code-line comment"># Mode standar - ARP berfungsi normal</div>
+            <div class="code-line"><span class="keyword">disabled</span></div>
+            <div class="code-line comment"># ARP dinonaktifkan pada interface</div>
+            <div class="code-line"><span class="keyword">proxy-arp</span></div>
+            <div class="code-line comment"># Router bertindak sebagai proxy ARP antar jaringan</div>
+            <div class="code-line"><span class="keyword">local-proxy-arp</span></div>
+            <div class="code-line comment"># Router bertindak sebagai proxy ARP dalam interface yang sama</div>
+            <div class="code-line"><span class="keyword">reply-only</span></div>
+            <div class="code-line comment"># Hanya merespons ARP, tidak membuat entri baru</div>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.4 Konfigurasi ARP di MikroTik</h3>
+
+         
+    <div class="image-container">
+        <img src="1.4-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Konfigurasi ARP di MikroTik</div>
+    </div>
+
+        
+        <p>Berikut adalah konfigurasi dasar ARP di MikroTik RouterOS:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword"># Menambahkan entri ARP statis</span></div>
+            <div class="code-line">/ip arp add address=192.168.1.10 mac-address=00:11:22:33:44:55 interface=ether1</div>
+            <div class="code-line comment"># Menambahkan entri statis untuk IP 192.168.1.10</div>
+            <div class="code-line"><span class="keyword"># Mengubah mode ARP pada interface</span></div>
+            <div class="code-line">/interface ethernet set ether1 arp=proxy-arp</div>
+            <div class="code-line comment"># Mengaktifkan proxy-arp pada interface ether1</div>
+            <div class="code-line"><span class="keyword"># Mengubah timeout ARP</span></div>
+            <div class="code-line">/ip settings set arp-timeout=30m</div>
+            <div class="code-line comment"># Mengatur waktu timeout untuk entri ARP dinamis</div>
+        </div>
+        
+        <div class="tech-alert">
+            <p>Menggunakan entri ARP statis untuk perangkat penting dapat meningkatkan keamanan jaringan dengan mencegah serangan ARP spoofing terhadap perangkat tersebut.</p>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">1.5 Pengujian ARP di MikroTik</h3>
+
+         
+    <div class="image-container">
+        <img src="1.5-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Pengujian ARP di MikroTi</div>
+    </div>
+
+        
+        <p>Untuk menguji dan memverifikasi konfigurasi ARP, gunakan perintah berikut:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword"># Melihat tabel ARP</span></div>
+            <div class="code-line">/ip arp print</div>
+            <div class="code-line comment"># Menampilkan semua entri ARP (statis dan dinamis)</div>
+            <div class="code-line"><span class="keyword"># Membersihkan tabel ARP</span></div>
+            <div class="code-line">/ip arp flush</div>
+            <div class="code-line comment"># Menghapus semua entri ARP dinamis</div>
+            <div class="code-line"><span class="keyword"># Melakukan ping untuk memicu proses ARP</span></div>
+            <div class="code-line">/ping 192.168.1.10</div>
+            <div class="code-line comment"># Ping akan memicu proses ARP jika entri belum ada</div>
+            <div class="code-line"><span class="keyword"># Mengirim Gratuitous ARP</span></div>
+            <div class="code-line">/ip arp ping 192.168.1.1</div>
+            <div class="code-line comment"># Mengirim ARP request untuk alamat IP router sendiri</div>
+        </div>
+        
+        <div class="security-alert">
+            <p>Dari sumber SecurityGladiators (2022), untuk mendeteksi kemungkinan ARP poisoning, perhatikan perubahan mendadak pada tabel ARP atau entri duplikat untuk IP yang sama dengan MAC berbeda. Pemantauan berkala terhadap tabel ARP adalah praktik keamanan yang baik.</p>
+        </div>
+
+        <div class="conclusion-box">
+            <strong>Kesimpulan ARP:</strong> ARP adalah protokol fundamental dalam jaringan yang memungkinkan komunikasi pada layer data-link dengan memetakan alamat IP ke alamat MAC. MikroTik RouterOS menyediakan berbagai mode ARP yang dapat disesuaikan dengan kebutuhan jaringan. Konfigurasi ARP yang tepat dapat meningkatkan keamanan dan kinerja jaringan, terutama dengan penggunaan entri statis dan pengaturan proxy ARP.
+        </div>
+    </div>
+
+    <h3 style="color: var(--primary-color); margin-top: 30px;">1.6 Pengujian ARP pada DHCP Server - Mencegah Akses IP Ilegal</h3>
+
+
+        <div class="image-container">
+        <img src="1.6-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Pengujian ARP pada DHCP Server - Mencegah Akses IP Ilegal</div>
+    </div>
+
+<p>Salah satu tantangan dalam jaringan adalah mencegah pengguna dari menggunakan alamat IP statis yang tidak sah atau "mencuri" IP address yang seharusnya dialokasikan oleh DHCP server.</p>
+
+<div class="tech-alert">
+    <p>Dengan mengkombinasikan pengaturan ARP "reply-only" dan fitur "Add ARP for Leases" pada DHCP server, administrator dapat memastikan hanya perangkat yang mendapat IP dari DHCP server yang dapat berkomunikasi di jaringan.</p>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Konfigurasi Pengujian:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Langkah 1: Mengatur ARP mode pada interface DHCP server</span></div>
+    <div class="code-line">/interface ethernet set ether1 arp=reply-only</div>
+    <div class="code-line comment"># Mode reply-only mencegah router mempelajari kombinasi IP+MAC baru secara dinamis</div>
+    <div class="code-line"><span class="keyword"># Langkah 2: Mengaktifkan Add ARP pada DHCP server</span></div>
+    <div class="code-line">/ip dhcp-server set dhcp1 add-arp=yes</div>
+    <div class="code-line comment"># Otomatis menambahkan entri ARP statis untuk setiap lease DHCP</div>
+    <div class="code-line"><span class="keyword"># Langkah 3: Membuat IP pool untuk DHCP</span></div>
+    <div class="code-line">/ip pool add name=dhcp_pool ranges=192.168.1.100-192.168.1.200</div>
+    <div class="code-line"><span class="keyword"># Langkah 4: Konfigurasi DHCP server</span></div>
+    <div class="code-line">/ip dhcp-server add interface=ether1 address-pool=dhcp_pool disabled=no add-arp=yes</div>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Pengujian Pencegahan IP Ilegal:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Test 1: Cek konfigurasi DHCP server</span></div>
+    <div class="code-line">/ip dhcp-server print detail</div>
+    <div class="code-line comment"># Verifikasi bahwa add-arp=yes sudah aktif</div>
+    <div class="code-line"><span class="keyword"># Test 2: Simulasi client mendapat IP dari DHCP</span></div>
+    <div class="code-line">/ip dhcp-server lease print</div>
+    <div class="code-line comment"># Lihat lease yang aktif dan IP yang dialokasikan</div>
+    <div class="code-line"><span class="keyword"># Test 3: Cek entri ARP yang ditambahkan otomatis</span></div>
+    <div class="code-line">/ip arp print where dynamic=no</div>
+    <div class="code-line comment"># Menampilkan entri ARP statis yang dibuat oleh DHCP server</div>
+    <div class="code-line"><span class="keyword"># Test 4: Simulasi penggunaan IP statis ilegal (dari client lain)</span></div>
+    <div class="code-line">/ping 192.168.1.150 count=5</div>
+    <div class="code-line comment"># Jika IP ini digunakan secara statis tanpa DHCP, tidak akan dapat komunikasi</div>
+</div>
+
+<div class="security-alert">
+    <p>Hasil yang diharapkan: Client yang mengatur IP statis di luar DHCP server tidak akan dapat berkomunikasi karena router tidak akan merespons ARP request untuk IP yang tidak ada dalam tabel ARP statis.</p>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Monitoring dan Troubleshooting:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Monitoring lease DHCP aktif</span></div>
+    <div class="code-line">/ip dhcp-server lease print where active=yes</div>
+    <div class="code-line comment"># Menampilkan semua lease yang sedang aktif</div>
+    <div class="code-line"><span class="keyword"># Mendeteksi upaya akses IP ilegal</span></div>
+    <div class="code-line">/log print where topics~"dhcp"</div>
+    <div class="code-line comment"># Melihat log DHCP untuk mendeteksi aktivitas mencurigakan</div>
+    <div class="code-line"><span class="keyword"># Reset ARP table untuk testing</span></div>
+    <div class="code-line">/ip arp flush</div>
+    <div class="code-line comment"># Menghapus entri ARP dinamis, statis tetap ada</div>
+</div>
+
+    <!-- Neighbor Discovery Section -->
+    <div class="section fade-in">
+        <h2 class="section-title">2. NEIGHBOR DISCOVERY PROTOCOL</h2>
+        
+        <div class="image-container">
+          <img src="2.4-ink.jpeg" alt="Topologi Neighbor Discovery pada MikroTik RouterOS">
+          <div class="image-caption">NEIGHBOR DISCOVERY PROTOCO</div>
+        </div>
+        
+        <p>Dari sumber MikroTik Documentation (2024), Neighbor Discovery adalah kumpulan protokol yang memungkinkan perangkat jaringan menemukan dan bertukar informasi dengan perangkat lain dalam domain broadcast Layer 2.</p>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.1 Manfaat Neighbor Discovery</h3>
+        
+        <div class="tech-alert">
+            <p>Protokol Neighbor Discovery memungkinkan router MikroTik menemukan dan bertukar informasi dengan perangkat lain yang mendukung protokol discovery seperti MNDP, CDP, LLDP, dan IPv6 Neighbor Discovery.</p>
+        </div>
+        
+        <p>Beberapa manfaat utama Neighbor Discovery:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">1. Otomatisasi Konfigurasi</span> fitur antar perangkat MikroTik</div>
+            <div class="code-line comment"># Memudahkan konfigurasi fitur seperti Packet Packer</div>
+            <div class="code-line"><span class="keyword">2. Pemetaan Jaringan</span> secara otomatis</div>
+            <div class="code-line comment"># Membantu administrator memahami topologi jaringan</div>
+            <div class="code-line"><span class="keyword">3. Interoperabilitas</span> dengan perangkat Cisco melalui CDP</div>
+            <div class="code-line comment"># Memungkinkan discovery di lingkungan multi-vendor</div>
+            <div class="code-line"><span class="keyword">4. IPv6 Autoconfiguration</span> melalui IPv6 ND</div>
+            <div class="code-line comment"># Memudahkan penerapan jaringan IPv6 tanpa DHCP</div>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.2 Jenis Protokol Neighbor Discovery</h3>
+        
+        <p>Dari sumber MikroTik Wiki (2023), RouterOS mendukung beberapa protokol discovery:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword">1. MNDP</span> (MikroTik Neighbor Discovery Protocol)</div>
+            <div class="code-line comment"># Protokol proprietary MikroTik untuk discovery antar perangkat MikroTik</div>
+            <div class="code-line"><span class="keyword">2. CDP</span> (Cisco Discovery Protocol)</div>
+            <div class="code-line comment"># Protokol discovery Cisco yang didukung oleh RouterOS</div>
+            <div class="code-line"><span class="keyword">3. LLDP</span> (Link Layer Discovery Protocol)</div>
+            <div class="code-line comment"># Protokol discovery standar IEEE 802.1AB</div>
+            <div class="code-line"><span class="keyword">4. IPv6 ND</span> (IPv6 Neighbor Discovery)</div>
+            <div class="code-line comment"># Bagian dari standar IPv6 yang menggantikan ARP, ICMP Router Discovery, dan ICMP Redirect</div>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.3 Cara Kerja Neighbor Discovery</h3>
+        
+        <p>Dari sumber RouterOS Wiki (2023), mekanisme Neighbor Discovery bekerja sebagai berikut:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line">1. Router mengirim paket discovery secara berkala ke jaringan</div>
+            <div class="code-line comment"># Biasanya sebagai multicast atau broadcast</div>
+            <div class="code-line">2. Paket berisi informasi dasar tentang perangkat</div>
+            <div class="code-line comment"># Seperti nama perangkat, versi, platform, alamat IP, interface</div>
+            <div class="code-line">3. Perangkat lain yang mendukung protokol yang sama menerima dan memproses paket</div>
+            <div class="code-line">4. Informasi disimpan dalam database tetangga</div>
+            <div class="code-line">5. Perangkat kemudian dapat menggunakan informasi ini untuk konfigurasi otomatis atau monitoring</div>
+        </div>
+        
+        <p>Untuk IPv6 Neighbor Discovery, proses sedikit berbeda:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line">1. Router Advertisement: Router mengirimkan informasi tentang prefix jaringan</div>
+            <div class="code-line">2. Router Solicitation: Host meminta informasi router</div>
+            <div class="code-line">3. Neighbor Solicitation: Seperti ARP request dalam IPv4</div>
+            <div class="code-line">4. Neighbor Advertisement: Seperti ARP reply dalam IPv4</div>
+            <div class="code-line">5. Redirect: Memberitahu host tentang rute yang lebih baik</div>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.4 Konfigurasi Neighbor Discovery di MikroTik</h3>
+        
+
+
+        <p>Konfigurasi dasar Neighbor Discovery di RouterOS:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword"># Mengatur interface discovery</span></div>
+            <div class="code-line">/interface list add name=discovery</div>
+            <div class="code-line">/interface list member add list=discovery interface=ether1</div>
+            <div class="code-line">/interface list member add list=discovery interface=ether2</div>
+            <div class="code-line comment"># Menambahkan interface ke list discovery</div>
+            <div class="code-line"><span class="keyword"># Mengonfigurasi discovery settings</span></div>
+            <div class="code-line">/ip neighbor discovery-settings set discover-interface-list=discovery</div>
+            <div class="code-line comment"># Mengaktifkan discovery pada interface dalam list</div>
+            <div class="code-line"><span class="keyword"># Mengonfigurasi IPv6 Neighbor Discovery</span></div>
+            <div class="code-line">/ipv6 nd set [ find default=yes ] disabled=no</div>
+            <div class="code-line">/ipv6 address add address=2001:db8::1/64 interface=ether1 advertise=yes</div>
+            <div class="code-line comment"># Mengaktifkan IPv6 Router Advertisement</div>
+        </div>
+        
+        <div class="tech-alert">
+            <p>Untuk slave interface pada bridge atau bonding, neighbor discovery dapat dikonfigurasi secara independen. Jika master interface disertakan dalam discovery list, semua slave interface akan otomatis berpartisipasi dalam discovery.</p>
+        </div>
+        
+        <h3 style="color: var(--primary-color); margin-top: 30px;">2.5 Pengujian Neighbor Discovery di MikroTik</h3>
+        
+        <p>Untuk menguji dan memverifikasi Neighbor Discovery:</p>
+        
+        <div class="code-terminal">
+            <div class="code-line"><span class="keyword"># Melihat daftar neighbor yang ditemukan</span></div>
+            <div class="code-line">/ip neighbor print</div>
+            <div class="code-line comment"># Menampilkan semua perangkat tetangga yang ditemukan</div>
+            <div class="code-line"><span class="keyword"># Memeriksa konfigurasi discovery</span></div>
+            <div class="code-line">/ip neighbor discovery-settings print</div>
+            <div class="code-line comment"># Menampilkan pengaturan discovery</div>
+            <div class="code-line"><span class="keyword"># Memeriksa IPv6 Neighbor Cache</span></div>
+            <div class="code-line">/ipv6 neighbor print</div>
+            <div class="code-line comment"># Menampilkan cache IPv6 Neighbor Discovery</div>
+            <div class="code-line"><span class="keyword"># Memeriksa IPv6 ND Prefix</span></div>
+            <div class="code-line">/ipv6 nd prefix print</div>
+            <div class="code-line comment"># Menampilkan prefix IPv6 yang diiklankan</div>
+        </div>
+        
+        <div class="security-alert">
+            <p>Dari sumber Network Security Journal (2023), meskipun Neighbor Discovery sangat berguna untuk manajemen jaringan, protokol ini dapat dimanfaatkan untuk mengumpulkan informasi tentang jaringan Anda. Pertimbangkan untuk membatasi Neighbor Discovery hanya pada jaringan internal dan menonaktifkannya pada interface yang menghadap ke jaringan publik.</p>
+        </div>
+
+        <div class="conclusion-box">
+            <strong>Kesimpulan Neighbor Discovery:</strong> Protokol Neighbor Discovery menyediakan cara efisien untuk mengotomatisasi penemuan perangkat dalam jaringan. MikroTik RouterOS mendukung berbagai protokol discovery termasuk MNDP, CDP, LLDP, dan IPv6 ND. Dengan konfigurasi yang tepat, administrator dapat memanfaatkan protokol ini untuk memudahkan manajemen jaringan, terutama di lingkungan dengan banyak perangkat atau di jaringan IPv6.
+        </div>
+    </div>
+
+    <h3 style="color: var(--primary-color); margin-top: 30px;">2.6 Pengujian Neighbor Discovery - Menyembunyikan Perangkat</h3>
+
+
+                <div class="image-container">
+        <img src="2.6-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Pengujian Neighbor Discovery</div>
+    </div>
+
+
+                    <div class="image-container">
+        <img src="2.6-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="dicovery mac.jpeg">Pengujian Neighbor Discovery</div>
+    </div>
+
+<p>Dalam beberapa skenario, administrator perlu menyembunyikan router MikroTik dari discovery oleh perangkat lain atau membatasi informasi yang dipublikasikan melalui protokol discovery.</p>
+
+<div class="security-alert">
+    <p>Mengaktifkan neighbor discovery pada interface yang menghadap internet dapat mengekspos informasi sensitif seperti MAC address, versi RouterOS, dan identitas sistem kepada penyerang potensial.</p>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Konfigurasi Penyembunyian Perangkat:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Langkah 1: Melihat status discovery saat ini</span></div>
+    <div class="code-line">/ip neighbor discovery-settings print</div>
+    <div class="code-line comment"># Menampilkan interface list yang aktif untuk discovery</div>
+    <div class="code-line"><span class="keyword"># Langkah 2: Membuat interface list untuk LAN saja</span></div>
+    <div class="code-line">/interface list add name=LAN-discovery comment="Interface untuk discovery internal"</div>
+    <div class="code-line">/interface list member add list=LAN-discovery interface=ether2</div>
+    <div class="code-line">/interface list member add list=LAN-discovery interface=ether3</div>
+    <div class="code-line comment"># Hanya menambahkan interface internal, bukan WAN interface</div>
+    <div class="code-line"><span class="keyword"># Langkah 3: Mengatur discovery hanya pada interface tertentu</span></div>
+    <div class="code-line">/ip neighbor discovery-settings set discover-interface-list=LAN-discovery</div>
+    <div class="code-line comment"># Router hanya akan melakukan discovery pada interface dalam list LAN-discovery</div>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Pengujian Penyembunyian Perangkat:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Test 1: Verifikasi konfigurasi discovery</span></div>
+    <div class="code-line">/ip neighbor discovery-settings print</div>
+    <div class="code-line comment"># Pastikan hanya interface list LAN-discovery yang aktif</div>
+    <div class="code-line"><span class="keyword"># Test 2: Cek discovery pada interface spesifik</span></div>
+    <div class="code-line">/interface list member print where list=LAN-discovery</div>
+    <div class="code-line comment"># Menampilkan interface yang berpartisipasi dalam discovery</div>
+    <div class="code-line"><span class="keyword"># Test 3: Monitor discovery packets</span></div>
+    <div class="code-line">/tool sniffer quick protocol=udp port=5678 interface=ether1 duration=30</div>
+    <div class="code-line comment"># Capture MNDP packets pada interface WAN (seharusnya tidak ada)</div>
+    <div class="code-line"><span class="keyword"># Test 4: Tes dari perangkat external</span></div>
+    <div class="code-line comment"># Dari perangkat di interface WAN, coba discover router MikroTik</div>
+    <div class="code-line comment"># Seharusnya router tidak muncul dalam hasil discovery</div>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Pengujian Lanjutan - Disable Discovery Completely:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Metode 1: Membuat interface list kosong</span></div>
+    <div class="code-line">/interface list add name=no-discovery comment="Empty list to disable discovery"</div>
+    <div class="code-line">/ip neighbor discovery-settings set discover-interface-list=no-discovery</div>
+    <div class="code-line comment"># Discovery akan dinonaktifkan pada semua interface</div>
+    <div class="code-line"><span class="keyword"># Metode 2: Disable discovery per-interface (untuk LLDP)</span></div>
+    <div class="code-line">/interface ethernet set ether1 lldp=disabled</div>
+    <div class="code-line comment"># Menonaktifkan LLDP pada interface WAN</div>
+    <div class="code-line"><span class="keyword"># Metode 3: Menggunakan bridge filter untuk block discovery packets</span></div>
+    <div class="code-line">/interface bridge filter add chain=output action=drop protocol=0x88cc comment="Block LLDP"</div>
+    <div class="code-line">/interface bridge filter add chain=output action=drop protocol=udp dst-port=5678 comment="Block MNDP"</div>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Verifikasi Hasil Pengujian:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Verifikasi 1: Cek neighbor yang masih bisa ditemukan</span></div>
+    <div class="code-line">/ip neighbor print</div>
+    <div class="code-line comment"># Hanya menampilkan neighbor dari interface yang diizinkan</div>
+    <div class="code-line"><span class="keyword"># Verifikasi 2: Test visibility dari external network</span></div>
+    <div class="code-line comment"># Dari perangkat eksternal, jalankan network scanner</div>
+    <div class="code-line comment"># Router MikroTik seharusnya tidak terdeteksi melalui discovery protocols</div>
+    <div class="code-line"><span class="keyword"># Verifikasi 3: Log monitoring</span></div>
+    <div class="code-line">/log print where message~"discovery"</div>
+    <div class="code-line comment"># Memeriksa log untuk aktivitas discovery</div>
+</div>
+
+<div class="conclusion-box">
+    <strong>Hasil Pengujian yang Diharapkan:</strong> Setelah mengimplementasikan konfigurasi penyembunyian, router MikroTik tidak akan terdeteksi oleh network scanners dari interface WAN, namun masih dapat melakukan discovery internal di jaringan LAN. Hal ini meningkatkan keamanan dengan mengurangi informasi yang tersedia bagi penyerang potensial.
+</div>
+
+    <!-- Bibliography -->
+    <div class="bibliography">
+        <h3>DAFTAR PUSTAKA</h3>
+        <ul>
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>ARP - RouterOS</em>. <a href="https://help.mikrotik.com/docs/display/ROS/ARP" target="_blank">https://help.mikrotik.com/docs/display/ROS/ARP</a>. Diakses pada 4 September 2025, pukul 08:15 WIB.</li>
+            
+            <li><strong>MikroTik Documentation.</strong> 2024. <em>Neighbor Discovery - RouterOS</em>. <a href="https://help.mikrotik.com/docs/display/ROS/Neighbor+Discovery" target="_blank">https://help.mikrotik.com/docs/display/ROS/Neighbor+Discovery</a>. Diakses pada 4 September 2025, pukul 08:30 WIB.</li>
+            
+            <li><strong>MikroTik Wiki.</strong> 2023. <em>Manual:IP/ARP</em>. <a href="https://wiki.mikrotik.com/wiki/Manual:IP/ARP" target="_blank">https://wiki.mikrotik.com/wiki/Manual:IP/ARP</a>. Diakses pada 4 September 2025, pukul 08:45 WIB.</li>
+            
+            <li><strong>RouterOS Wiki.</strong> 2023. <em>Manual:IP/Neighbor discovery</em>. <a href="https://wiki.mikrotik.com/wiki/Manual:IP/Neighbor_discovery" target="_blank">https://wiki.mikrotik.com/wiki/Manual:IP/Neighbor_discovery</a>. Diakses pada 4 September 2025, pukul 09:05 WIB.</li>
+            
+            <li><strong>Network Encyclopedia.</strong> 2023. <em>Address Resolution Protocol (ARP)</em>. <a href="https://networkencyclopedia.com/address-resolution-protocol-arp/" target="_blank">https://networkencyclopedia.com/address-resolution-protocol-arp/</a>. Diakses pada 4 September 2025, pukul 09:20 WIB.</li>
+            
+            <li><strong>SecurityGladiators.</strong> 2022. <em>ARP Poisoning: Understanding and Prevention</em>. <a href="https://securitygladiators.com/arp-poisoning/" target="_blank">https://securitygladiators.com/arp-poisoning/</a>. Diakses pada 4 September 2025, pukul 09:35 WIB.</li>
+            
+            <li><strong>Network Security Journal.</strong> 2023. <em>Security Implications of Network Discovery Protocols</em>. <a href="https://networksecurityjournal.com/discovery-protocols-security" target="_blank">https://networksecurityjournal.com/discovery-protocols-security</a>. Diakses pada 4 September 2025, pukul 09:50 WIB.</li>
+            
+            <li><strong>MikroTik Forum.</strong> 2023. <em>IPv6 Neighbor Discovery Setup</em>. <a href="https://forum.mikrotik.com/viewtopic.php?t=193356" target="_blank">https://forum.mikrotik.com/viewtopic.php?t=193356</a>. Diakses pada 4 September 2025, pukul 10:10 WIB.</li>
+            
+            <li><strong>NetworkLessons.</strong> 2022. <em>ARP Explained with MikroTik Examples</em>. <a href="https://networklessons.com/switching/arp-address-resolution-protocol-explained" target="_blank">https://networklessons.com/switching/arp-address-resolution-protocol-explained</a>. Diakses pada 4 September 2025, pukul 10:25 WIB.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // Tech particles animation
+    function createTechParticles() {
+        const particlesContainer = document.getElementById('techParticles');
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+            
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Scroll progress
+    function updateScrollProgress() {
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollPercent = (scrollTop / scrollHeight) * 100;
+        document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+    }
+
+    // Typing effect for code lines
+    function typeText(element, text, speed = 30) {
+        return new Promise(resolve => {
+            element.classList.add('typing');
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML = text.slice(0, i + 1);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    element.classList.remove('typing');
+                    element.classList.add('typed');
+                    resolve();
+                }
+            }
+            type();
+        });
+    }
+
+    // Animate code blocks with typing effect
+    function animateCodeBlocks() {
+        const codeTerminals = document.querySelectorAll('.code-terminal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const codeLines = entry.target.querySelectorAll('.code-line');
+                    let delay = 0;
+                    
+                    codeLines.forEach((line, index) => {
+                        const originalText = line.innerHTML;
+                        setTimeout(async () => {
+                            await typeText(line, originalText, 20);
+                        }, delay);
+                        delay += 500; // 500ms delay between lines
+                    });
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        codeTerminals.forEach(terminal => {
+            observer.observe(terminal);
+        });
+    }
+
+    // Fade in animation on scroll
+    function animateOnScroll() {
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(element => {
+            observer.observe(element);
+        });
+    }
+
+    // Code block hover effects
+    function addCodeEffects() {
+        const codeLines = document.querySelectorAll('.code-line');
+        codeLines.forEach(line => {
+            line.addEventListener('mouseenter', () => {
+                if (line.classList.contains('typed')) {
+                    line.style.transform = 'translateX(5px)';
+                    line.style.background = 'rgba(37, 99, 235, 0.1)';
+                }
+            });
+            line.addEventListener('mouseleave', () => {
+                line.style.transform = 'translateX(0)';
+                line.style.background = 'transparent';
+            });
+        });
+    }
+
+    // Section hover effects
+    function addSectionEffects() {
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+            section.addEventListener('mouseenter', () => {
+                section.style.transform = 'translateY(-8px)';
+            });
+            section.addEventListener('mouseleave', () => {
+                section.style.transform = 'translateY(0)';
+            });
+        });
+    }
+
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+        createTechParticles();
+        animateOnScroll();
+        animateCodeBlocks();
+        addCodeEffects();
+        addSectionEffects();
+        
+        // Scroll events
+        window.addEventListener('scroll', updateScrollProgress);
+        
+        // Smooth scrolling for better UX
+        document.documentElement.style.scrollBehavior = 'smooth';
+    });
+
+    // Add responsive particle count
+    function adjustParticleCount() {
+        const width = window.innerWidth;
+        const particlesContainer = document.getElementById('techParticles');
+        const currentParticles = particlesContainer.children.length;
+        const targetParticles = width < 768 ? 20 : width < 1200 ? 35 : 50;
+        
+        if (currentParticles !== targetParticles) {
+            particlesContainer.innerHTML = '';
+            for (let i = 0; i < targetParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+    }
+
+    window.addEventListener('resize', adjustParticleCount);
+
+
  // Anti-Copy JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     // Mencegah seleksi teks
@@ -38,3 +1424,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
     });
 });
+
+   
+</script>
+</head>
+</html>
