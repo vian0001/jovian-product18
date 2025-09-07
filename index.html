@@ -776,13 +776,25 @@
     </div>
 </div>
 
+<!-- Network Topology Section -->
+<div class="section fade-in">
+    <h2 class="section-title">TOPOLOGI JARINGAN</h2>
+
+    <!-- Gambar Topologi -->
+    <div class="image-container">
+        <img src="topologi.png" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Tampilan topologi jaringan untuk Interface List dan Group</div>
+    </div>
+
+
+
 <div class="container">
     <!-- ARP Section -->
     <div class="section fade-in">
         <h2 class="section-title">1. ADDRESS RESOLUTION PROTOCOL (ARP)</h2>
         
         <div class="image-container">
-          <img src="topologi.png" alt="Topologi ARP pada MikroTik RouterOS">
+          <img src="no 1.png" alt="Topologi ARP pada MikroTik RouterOS">
           <div class="image-caption">Topologi jaringan untuk pengujian ARP</div>
         </div>
         
@@ -896,6 +908,64 @@
             <strong>Kesimpulan ARP:</strong> ARP adalah protokol fundamental dalam jaringan yang memungkinkan komunikasi pada layer data-link dengan memetakan alamat IP ke alamat MAC. MikroTik RouterOS menyediakan berbagai mode ARP yang dapat disesuaikan dengan kebutuhan jaringan. Konfigurasi ARP yang tepat dapat meningkatkan keamanan dan kinerja jaringan, terutama dengan penggunaan entri statis dan pengaturan proxy ARP.
         </div>
     </div>
+
+    <h3 style="color: var(--primary-color); margin-top: 30px;">1.6 Pengujian ARP pada DHCP Server - Mencegah Akses IP Ilegal</h3>
+
+<p>Salah satu tantangan dalam jaringan adalah mencegah pengguna dari menggunakan alamat IP statis yang tidak sah atau "mencuri" IP address yang seharusnya dialokasikan oleh DHCP server.</p>
+
+<div class="tech-alert">
+    <p>Dengan mengkombinasikan pengaturan ARP "reply-only" dan fitur "Add ARP for Leases" pada DHCP server, administrator dapat memastikan hanya perangkat yang mendapat IP dari DHCP server yang dapat berkomunikasi di jaringan.</p>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Konfigurasi Pengujian:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Langkah 1: Mengatur ARP mode pada interface DHCP server</span></div>
+    <div class="code-line">/interface ethernet set ether1 arp=reply-only</div>
+    <div class="code-line comment"># Mode reply-only mencegah router mempelajari kombinasi IP+MAC baru secara dinamis</div>
+    <div class="code-line"><span class="keyword"># Langkah 2: Mengaktifkan Add ARP pada DHCP server</span></div>
+    <div class="code-line">/ip dhcp-server set dhcp1 add-arp=yes</div>
+    <div class="code-line comment"># Otomatis menambahkan entri ARP statis untuk setiap lease DHCP</div>
+    <div class="code-line"><span class="keyword"># Langkah 3: Membuat IP pool untuk DHCP</span></div>
+    <div class="code-line">/ip pool add name=dhcp_pool ranges=192.168.1.100-192.168.1.200</div>
+    <div class="code-line"><span class="keyword"># Langkah 4: Konfigurasi DHCP server</span></div>
+    <div class="code-line">/ip dhcp-server add interface=ether1 address-pool=dhcp_pool disabled=no add-arp=yes</div>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Pengujian Pencegahan IP Ilegal:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Test 1: Cek konfigurasi DHCP server</span></div>
+    <div class="code-line">/ip dhcp-server print detail</div>
+    <div class="code-line comment"># Verifikasi bahwa add-arp=yes sudah aktif</div>
+    <div class="code-line"><span class="keyword"># Test 2: Simulasi client mendapat IP dari DHCP</span></div>
+    <div class="code-line">/ip dhcp-server lease print</div>
+    <div class="code-line comment"># Lihat lease yang aktif dan IP yang dialokasikan</div>
+    <div class="code-line"><span class="keyword"># Test 3: Cek entri ARP yang ditambahkan otomatis</span></div>
+    <div class="code-line">/ip arp print where dynamic=no</div>
+    <div class="code-line comment"># Menampilkan entri ARP statis yang dibuat oleh DHCP server</div>
+    <div class="code-line"><span class="keyword"># Test 4: Simulasi penggunaan IP statis ilegal (dari client lain)</span></div>
+    <div class="code-line">/ping 192.168.1.150 count=5</div>
+    <div class="code-line comment"># Jika IP ini digunakan secara statis tanpa DHCP, tidak akan dapat komunikasi</div>
+</div>
+
+<div class="security-alert">
+    <p>Hasil yang diharapkan: Client yang mengatur IP statis di luar DHCP server tidak akan dapat berkomunikasi karena router tidak akan merespons ARP request untuk IP yang tidak ada dalam tabel ARP statis.</p>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Monitoring dan Troubleshooting:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Monitoring lease DHCP aktif</span></div>
+    <div class="code-line">/ip dhcp-server lease print where active=yes</div>
+    <div class="code-line comment"># Menampilkan semua lease yang sedang aktif</div>
+    <div class="code-line"><span class="keyword"># Mendeteksi upaya akses IP ilegal</span></div>
+    <div class="code-line">/log print where topics~"dhcp"</div>
+    <div class="code-line comment"># Melihat log DHCP untuk mendeteksi aktivitas mencurigakan</div>
+    <div class="code-line"><span class="keyword"># Reset ARP table untuk testing</span></div>
+    <div class="code-line">/ip arp flush</div>
+    <div class="code-line comment"># Menghapus entri ARP dinamis, statis tetap ada</div>
+</div>
 
     <!-- Neighbor Discovery Section -->
     <div class="section fade-in">
@@ -1016,6 +1086,80 @@
             <strong>Kesimpulan Neighbor Discovery:</strong> Protokol Neighbor Discovery menyediakan cara efisien untuk mengotomatisasi penemuan perangkat dalam jaringan. MikroTik RouterOS mendukung berbagai protokol discovery termasuk MNDP, CDP, LLDP, dan IPv6 ND. Dengan konfigurasi yang tepat, administrator dapat memanfaatkan protokol ini untuk memudahkan manajemen jaringan, terutama di lingkungan dengan banyak perangkat atau di jaringan IPv6.
         </div>
     </div>
+
+    <h3 style="color: var(--primary-color); margin-top: 30px;">2.6 Pengujian Neighbor Discovery - Menyembunyikan Perangkat</h3>
+
+<p>Dalam beberapa skenario, administrator perlu menyembunyikan router MikroTik dari discovery oleh perangkat lain atau membatasi informasi yang dipublikasikan melalui protokol discovery.</p>
+
+<div class="security-alert">
+    <p>Mengaktifkan neighbor discovery pada interface yang menghadap internet dapat mengekspos informasi sensitif seperti MAC address, versi RouterOS, dan identitas sistem kepada penyerang potensial.</p>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Konfigurasi Penyembunyian Perangkat:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Langkah 1: Melihat status discovery saat ini</span></div>
+    <div class="code-line">/ip neighbor discovery-settings print</div>
+    <div class="code-line comment"># Menampilkan interface list yang aktif untuk discovery</div>
+    <div class="code-line"><span class="keyword"># Langkah 2: Membuat interface list untuk LAN saja</span></div>
+    <div class="code-line">/interface list add name=LAN-discovery comment="Interface untuk discovery internal"</div>
+    <div class="code-line">/interface list member add list=LAN-discovery interface=ether2</div>
+    <div class="code-line">/interface list member add list=LAN-discovery interface=ether3</div>
+    <div class="code-line comment"># Hanya menambahkan interface internal, bukan WAN interface</div>
+    <div class="code-line"><span class="keyword"># Langkah 3: Mengatur discovery hanya pada interface tertentu</span></div>
+    <div class="code-line">/ip neighbor discovery-settings set discover-interface-list=LAN-discovery</div>
+    <div class="code-line comment"># Router hanya akan melakukan discovery pada interface dalam list LAN-discovery</div>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Pengujian Penyembunyian Perangkat:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Test 1: Verifikasi konfigurasi discovery</span></div>
+    <div class="code-line">/ip neighbor discovery-settings print</div>
+    <div class="code-line comment"># Pastikan hanya interface list LAN-discovery yang aktif</div>
+    <div class="code-line"><span class="keyword"># Test 2: Cek discovery pada interface spesifik</span></div>
+    <div class="code-line">/interface list member print where list=LAN-discovery</div>
+    <div class="code-line comment"># Menampilkan interface yang berpartisipasi dalam discovery</div>
+    <div class="code-line"><span class="keyword"># Test 3: Monitor discovery packets</span></div>
+    <div class="code-line">/tool sniffer quick protocol=udp port=5678 interface=ether1 duration=30</div>
+    <div class="code-line comment"># Capture MNDP packets pada interface WAN (seharusnya tidak ada)</div>
+    <div class="code-line"><span class="keyword"># Test 4: Tes dari perangkat external</span></div>
+    <div class="code-line comment"># Dari perangkat di interface WAN, coba discover router MikroTik</div>
+    <div class="code-line comment"># Seharusnya router tidak muncul dalam hasil discovery</div>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Pengujian Lanjutan - Disable Discovery Completely:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Metode 1: Membuat interface list kosong</span></div>
+    <div class="code-line">/interface list add name=no-discovery comment="Empty list to disable discovery"</div>
+    <div class="code-line">/ip neighbor discovery-settings set discover-interface-list=no-discovery</div>
+    <div class="code-line comment"># Discovery akan dinonaktifkan pada semua interface</div>
+    <div class="code-line"><span class="keyword"># Metode 2: Disable discovery per-interface (untuk LLDP)</span></div>
+    <div class="code-line">/interface ethernet set ether1 lldp=disabled</div>
+    <div class="code-line comment"># Menonaktifkan LLDP pada interface WAN</div>
+    <div class="code-line"><span class="keyword"># Metode 3: Menggunakan bridge filter untuk block discovery packets</span></div>
+    <div class="code-line">/interface bridge filter add chain=output action=drop protocol=0x88cc comment="Block LLDP"</div>
+    <div class="code-line">/interface bridge filter add chain=output action=drop protocol=udp dst-port=5678 comment="Block MNDP"</div>
+</div>
+
+<h4 style="color: var(--accent-color); margin-top: 25px;">Verifikasi Hasil Pengujian:</h4>
+
+<div class="code-terminal">
+    <div class="code-line"><span class="keyword"># Verifikasi 1: Cek neighbor yang masih bisa ditemukan</span></div>
+    <div class="code-line">/ip neighbor print</div>
+    <div class="code-line comment"># Hanya menampilkan neighbor dari interface yang diizinkan</div>
+    <div class="code-line"><span class="keyword"># Verifikasi 2: Test visibility dari external network</span></div>
+    <div class="code-line comment"># Dari perangkat eksternal, jalankan network scanner</div>
+    <div class="code-line comment"># Router MikroTik seharusnya tidak terdeteksi melalui discovery protocols</div>
+    <div class="code-line"><span class="keyword"># Verifikasi 3: Log monitoring</span></div>
+    <div class="code-line">/log print where message~"discovery"</div>
+    <div class="code-line comment"># Memeriksa log untuk aktivitas discovery</div>
+</div>
+
+<div class="conclusion-box">
+    <strong>Hasil Pengujian yang Diharapkan:</strong> Setelah mengimplementasikan konfigurasi penyembunyian, router MikroTik tidak akan terdeteksi oleh network scanners dari interface WAN, namun masih dapat melakukan discovery internal di jaringan LAN. Hal ini meningkatkan keamanan dengan mengurangi informasi yang tersedia bagi penyerang potensial.
+</div>
 
     <!-- Bibliography -->
     <div class="bibliography">
