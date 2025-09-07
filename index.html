@@ -782,8 +782,17 @@
 
     <!-- Gambar Topologi -->
     <div class="image-container">
-        <img src="topologi.png" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <img src="images (1)/topologi deskripsi.png" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
         <div class="image-caption">Tampilan topologi jaringan untuk Interface List dan Group</div>
+    </div>
+
+
+        <!-- Gambar Topologi -->
+    <div class="image-container">
+        <img src="images (1)/topologi-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Tampilan topologi jaringan untuk Interface List dan Group</div>
+    </div>
+
     </div>
 
 
@@ -794,8 +803,8 @@
         <h2 class="section-title">1. ADDRESS RESOLUTION PROTOCOL (ARP)</h2>
         
         <div class="image-container">
-          <img src="no 1.png" alt="Topologi ARP pada MikroTik RouterOS">
-          <div class="image-caption">Topologi jaringan untuk pengujian ARP</div>
+          <img src="images (1)/no 1-ink.jpeg" alt="Topologi ARP pada MikroTik RouterOS">
+          <div class="image-caption">ADDRESS RESOLUTION PROTOCOL</div>
         </div>
         
         <p>Dari sumber MikroTik Documentation (2024), Address Resolution Protocol (ARP) adalah protokol jaringan yang digunakan untuk menemukan alamat MAC (Media Access Control) dari perangkat berdasarkan alamat IP-nya dalam jaringan lokal.</p>
@@ -841,11 +850,7 @@
         
         <h3 style="color: var(--primary-color); margin-top: 30px;">1.3 Mode ARP di MikroTik</h3>
 
-                <div class="image-container">
-          <img src="topologi1.png" alt="Topologi Neighbor Discovery pada MikroTik RouterOS">
-          <div class="image-caption">Topologi jaringan untuk pengujian Neighbor Discovery</div>
-        </div>
-        
+
         <p>Dari sumber MikroTik Wiki (2023), RouterOS memiliki beberapa mode ARP yang dapat dikonfigurasi:</p>
         
         <div class="code-terminal">
@@ -862,6 +867,13 @@
         </div>
         
         <h3 style="color: var(--primary-color); margin-top: 30px;">1.4 Konfigurasi ARP di MikroTik</h3>
+
+         
+    <div class="image-container">
+        <img src="images (1)/1.4-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Konfigurasi ARP di MikroTik</div>
+    </div>
+
         
         <p>Berikut adalah konfigurasi dasar ARP di MikroTik RouterOS:</p>
         
@@ -882,6 +894,13 @@
         </div>
         
         <h3 style="color: var(--primary-color); margin-top: 30px;">1.5 Pengujian ARP di MikroTik</h3>
+
+         
+    <div class="image-container">
+        <img src="images (1)/1.5-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Pengujian ARP di MikroTi</div>
+    </div>
+
         
         <p>Untuk menguji dan memverifikasi konfigurasi ARP, gunakan perintah berikut:</p>
         
@@ -910,6 +929,12 @@
     </div>
 
     <h3 style="color: var(--primary-color); margin-top: 30px;">1.6 Pengujian ARP pada DHCP Server - Mencegah Akses IP Ilegal</h3>
+
+
+        <div class="image-container">
+        <img src="images (1)/1.6-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Pengujian ARP pada DHCP Server - Mencegah Akses IP Ilegal</div>
+    </div>
 
 <p>Salah satu tantangan dalam jaringan adalah mencegah pengguna dari menggunakan alamat IP statis yang tidak sah atau "mencuri" IP address yang seharusnya dialokasikan oleh DHCP server.</p>
 
@@ -972,8 +997,8 @@
         <h2 class="section-title">2. NEIGHBOR DISCOVERY PROTOCOL</h2>
         
         <div class="image-container">
-          <img src="topologi.png" alt="Topologi Neighbor Discovery pada MikroTik RouterOS">
-          <div class="image-caption">Topologi jaringan untuk pengujian Neighbor Discovery</div>
+          <img src="images (1)/2.4-ink.jpeg" alt="Topologi Neighbor Discovery pada MikroTik RouterOS">
+          <div class="image-caption">NEIGHBOR DISCOVERY PROTOCO</div>
         </div>
         
         <p>Dari sumber MikroTik Documentation (2024), Neighbor Discovery adalah kumpulan protokol yang memungkinkan perangkat jaringan menemukan dan bertukar informasi dengan perangkat lain dalam domain broadcast Layer 2.</p>
@@ -1038,6 +1063,8 @@
         
         <h3 style="color: var(--primary-color); margin-top: 30px;">2.4 Konfigurasi Neighbor Discovery di MikroTik</h3>
         
+
+
         <p>Konfigurasi dasar Neighbor Discovery di RouterOS:</p>
         
         <div class="code-terminal">
@@ -1088,6 +1115,13 @@
     </div>
 
     <h3 style="color: var(--primary-color); margin-top: 30px;">2.6 Pengujian Neighbor Discovery - Menyembunyikan Perangkat</h3>
+
+
+                <div class="image-container">
+        <img src="images (1)/2.6-ink.jpeg" alt="Topologi Interface List dan Group pada MikroTik RouterOS">
+        <div class="image-caption">Pengujian Neighbor Discovery</div>
+    </div>
+
 
 <p>Dalam beberapa skenario, administrator perlu menyembunyikan router MikroTik dari discovery oleh perangkat lain atau membatasi informasi yang dipublikasikan melalui protokol discovery.</p>
 
@@ -1344,46 +1378,7 @@
 
     window.addEventListener('resize', adjustParticleCount);
 
-           // Anti-Copy JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    // Mencegah seleksi teks
-    document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-        return false;
-    });
 
-    // Mencegah penyalinan teks (Ctrl+C)
-    document.addEventListener('copy', function(e) {
-        e.preventDefault();
-        // Opsional: Tampilkan pesan
-        alert('Maaf, penyalinan konten pada halaman ini tidak diizinkan!');
-        return false;
-    });
-
-    // Mencegah pemotongan teks (Ctrl+X)
-    document.addEventListener('cut', function(e) {
-        e.preventDefault();
-        return false;
-    });
-
-    // Mencegah penempelan teks (Ctrl+V)
-    document.addEventListener('paste', function(e) {
-        e.preventDefault();
-        return false;
-    });
-
-    // Mencegah klik kanan
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        return false;
-    });
-
-    // Mencegah drag & drop
-    document.addEventListener('dragstart', function(e) {
-        e.preventDefault();
-        return false;
-    });
-});
 
 
    
